@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<!-- saved from url=(0066)file:///Users/canberry_can/Downloads/otsg_candidate_scoring_3.html -->
+<html lang="de"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OTSG Candidate Scoring</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f3;color:#1a1a1a;padding:1.5rem}
+.wrap{max-width:760px;margin:0 auto}
+.logo-bar{background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.logo-bar img{height:22px;width:auto;display:block}
+.logo-bar-label{font-size:11px;color:#888;font-weight:500;letter-spacing:0.04em}
+.header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;gap:1rem;flex-wrap:wrap}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;min-width:260px}
+.meta input{width:100%;font-size:13px;padding:6px 10px;border:0.5px solid #ccc;border-radius:8px;background:#fff;color:#1a1a1a}
+.scorebox{background:#f0efe8;border-radius:12px;padding:1rem 1.25rem;text-align:center;min-width:120px}
+.scorebox .label{font-size:12px;color:#666;margin-bottom:4px}
+.scorebox .total{font-size:32px;font-weight:500;color:#1a1a1a}
+.scorebox .verdict{font-size:12px;font-weight:500;margin-top:4px}
+.section{margin-bottom:1.25rem;background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;overflow:hidden}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f5f5f3;border-bottom:0.5px solid rgba(0,0,0,0.1)}
+.sec-title{font-size:13px;font-weight:500;color:#1a1a1a}
+.sec-weight{font-size:11px;color:#888}
+.sec-score{font-size:13px;font-weight:500}
+.row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:8px 14px;border-bottom:0.5px solid rgba(0,0,0,0.08)}
+.row:last-child{border-bottom:none}
+.crit{font-size:13px;color:#1a1a1a}
+.w-badge{font-size:11px;color:#888;white-space:nowrap}
+.stars{display:flex;gap:4px}
+.star{width:22px;height:22px;border-radius:4px;border:0.5px solid #ccc;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#aaa;background:#fff}
+.star.active-1,.star.active-2{background:#FAEEDA;color:#633806}
+.star.active-3{background:#EAF3DE;color:#27500A}
+.star.active-4{background:#E1F5EE;color:#085041}
+.star.active-5{background:#EEEDFE;color:#3C3489}
+.koflag{display:flex;align-items:center;gap:6px;padding:8px 14px;border-bottom:0.5px solid rgba(0,0,0,0.08)}
+.koflag:last-child{border-bottom:none}
+.ko-label{font-size:13px;flex:1;color:#1a1a1a}
+.ko-btn{font-size:11px;font-weight:500;padding:4px 10px;border-radius:8px;border:0.5px solid #ccc;cursor:pointer;background:#fff;color:#888}
+.ko-btn.ko-yes{background:#FCEBEB;color:#791F1F;border-color:#F09595}
+.notes-area{width:100%;padding:8px 14px;font-size:13px;border:none;border-top:0.5px solid rgba(0,0,0,0.08);background:#fff;color:#1a1a1a;resize:vertical;min-height:70px;font-family:system-ui,-apple-system,sans-serif;outline:none}
+.verdict-bar{display:flex;gap:8px;flex-wrap:wrap}
+.vbtn{flex:1;min-width:80px;padding:10px;border-radius:8px;border:0.5px solid #ccc;cursor:pointer;font-size:13px;font-weight:500;background:#fff;color:#888;text-align:center}
+.vbtn.sel-hire{background:#EAF3DE;color:#27500A;border-color:#97C459}
+.vbtn.sel-r2{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
+.vbtn.sel-hold{background:#FAEEDA;color:#633806;border-color:#FAC775}
+.vbtn.sel-no{background:#FCEBEB;color:#791F1F;border-color:#F09595}
+.btn-row{display:flex;gap:8px;margin-top:1rem}
+.export-btn{flex:1;padding:10px;border:0.5px solid #ccc;border-radius:8px;background:#fff;color:#1a1a1a;font-size:13px;cursor:pointer;text-align:center}
+.progress-bar{height:3px;background:#e0e0e0;margin-top:8px;border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;transition:width 0.2s}
+.verdict-pad{padding:10px 14px}
+.summary-box{margin-top:1rem;padding:14px 16px;background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;font-size:13px;line-height:1.75;color:#1a1a1a;display:none}
+.summary-box .sum-label{font-size:11px;font-weight:500;color:#888;margin-bottom:8px;letter-spacing:0.04em}
+.summary-box .sum-text{color:#2c2c2a}
+.summary-box .sum-copy{margin-top:10px;font-size:11px;color:#639922;font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="logo-bar">
+  <img src="./OTSG Candidate Scoring_files/cropped-THE-SIGNAGE-GROUP-Logo-black.png" alt="The Signage Group">
+  <span class="logo-bar-label">Candidate Scoring Tool</span>
+</div>
+
+<div class="header">
+  <div class="meta">
+    <input id="cname" placeholder="Kandidat: Name">
+    <input id="cdate" placeholder="Datum: TT.MM.JJJJ">
+    <input id="crole" placeholder="Position" value="Sales Manager – OTSG">
+    <input id="cint" placeholder="Interviewer" value="Can">
+  </div>
+  <div class="scorebox">
+    <div class="label">Gesamt-Score</div>
+    <div class="total" id="total-score">0</div>
+    <div style="font-size:11px;color:#888">/ 100 Pkt.</div>
+    <div class="verdict" id="verdict-label" style="color: rgb(121, 31, 31);">No Go</div>
+    <div class="progress-bar"><div class="progress-fill" id="prog" style="width: 0%; background: rgb(226, 75, 74);"></div></div>
+  </div>
+</div>
+
+<div id="sections"><div class="section">
+      <div class="sec-head">
+        <span class="sec-title">Mindset &amp; Motivation</span>
+        <span class="sec-weight">Weight: 20 pts</span>
+        <span class="sec-score" id="ss-mindset">0 / 20</span>
+      </div>
+      
+        <div class="row">
+          <span class="crit">Intrinsische Motivation / Eigenantrieb</span>
+          <span class="w-badge">×3</span>
+          <div class="stars" id="stars-mindset-0">
+            <div class="star" data-sec="mindset" data-idx="0" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="mindset" data-idx="0" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="mindset" data-idx="0" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="mindset" data-idx="0" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="mindset" data-idx="0" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Umgang mit Rückschlägen (Resilienz)</span>
+          <span class="w-badge">×3</span>
+          <div class="stars" id="stars-mindset-1">
+            <div class="star" data-sec="mindset" data-idx="1" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="mindset" data-idx="1" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="mindset" data-idx="1" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="mindset" data-idx="1" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="mindset" data-idx="1" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Klares Karriereziel &amp; Ambitionen</span>
+          <span class="w-badge">×2</span>
+          <div class="stars" id="stars-mindset-2">
+            <div class="star" data-sec="mindset" data-idx="2" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="mindset" data-idx="2" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="mindset" data-idx="2" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="mindset" data-idx="2" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="mindset" data-idx="2" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Energie &amp; Auftreten im Gespräch</span>
+          <span class="w-badge">×2</span>
+          <div class="stars" id="stars-mindset-3">
+            <div class="star" data-sec="mindset" data-idx="3" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="mindset" data-idx="3" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="mindset" data-idx="3" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="mindset" data-idx="3" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="mindset" data-idx="3" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+    </div><div class="section">
+      <div class="sec-head">
+        <span class="sec-title">Sales Experience &amp; Track Record</span>
+        <span class="sec-weight">Weight: 25 pts</span>
+        <span class="sec-score" id="ss-salesexp">0 / 25</span>
+      </div>
+      
+        <div class="row">
+          <span class="crit">Ticket-Größe &amp; Komplexität (B2B)</span>
+          <span class="w-badge">×3</span>
+          <div class="stars" id="stars-salesexp-0">
+            <div class="star" data-sec="salesexp" data-idx="0" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="salesexp" data-idx="0" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="salesexp" data-idx="0" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="salesexp" data-idx="0" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="salesexp" data-idx="0" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Strukturierter Sales-Prozess (Opener → Close)</span>
+          <span class="w-badge">×3</span>
+          <div class="stars" id="stars-salesexp-1">
+            <div class="star" data-sec="salesexp" data-idx="1" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="salesexp" data-idx="1" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="salesexp" data-idx="1" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="salesexp" data-idx="1" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="salesexp" data-idx="1" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Einwandbehandlung – reale Beispiele</span>
+          <span class="w-badge">×2</span>
+          <div class="stars" id="stars-salesexp-2">
+            <div class="star" data-sec="salesexp" data-idx="2" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="salesexp" data-idx="2" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="salesexp" data-idx="2" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="salesexp" data-idx="2" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="salesexp" data-idx="2" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Call-Volumen &amp; Disziplin (Calls/Tag)</span>
+          <span class="w-badge">×2</span>
+          <div class="stars" id="stars-salesexp-3">
+            <div class="star" data-sec="salesexp" data-idx="3" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="salesexp" data-idx="3" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="salesexp" data-idx="3" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="salesexp" data-idx="3" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="salesexp" data-idx="3" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+    </div><div class="section">
+      <div class="sec-head">
+        <span class="sec-title">CRM &amp; Pipeline Discipline</span>
+        <span class="sec-weight">Weight: 20 pts</span>
+        <span class="sec-score" id="ss-crm">0 / 20</span>
+      </div>
+      
+        <div class="row">
+          <span class="crit">CRM-Erfahrung (aktive Nutzung, korrekte Stages)</span>
+          <span class="w-badge">×3</span>
+          <div class="stars" id="stars-crm-0">
+            <div class="star" data-sec="crm" data-idx="0" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="crm" data-idx="0" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="crm" data-idx="0" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="crm" data-idx="0" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="crm" data-idx="0" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Dokumentationsqualität &amp; Notizen-Hygiene</span>
+          <span class="w-badge">×2</span>
+          <div class="stars" id="stars-crm-1">
+            <div class="star" data-sec="crm" data-idx="1" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="crm" data-idx="1" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="crm" data-idx="1" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="crm" data-idx="1" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="crm" data-idx="1" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Follow-Up-Konsequenz (5–12 Kontakte)</span>
+          <span class="w-badge">×2</span>
+          <div class="stars" id="stars-crm-2">
+            <div class="star" data-sec="crm" data-idx="2" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="crm" data-idx="2" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="crm" data-idx="2" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="crm" data-idx="2" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="crm" data-idx="2" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Erkennung toter Deals / Pipeline-Pflege</span>
+          <span class="w-badge">×2</span>
+          <div class="stars" id="stars-crm-3">
+            <div class="star" data-sec="crm" data-idx="3" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="crm" data-idx="3" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="crm" data-idx="3" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="crm" data-idx="3" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="crm" data-idx="3" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+    </div><div class="section">
+      <div class="sec-head">
+        <span class="sec-title">Closing &amp; Leadership</span>
+        <span class="sec-weight">Weight: 20 pts</span>
+        <span class="sec-score" id="ss-closing">0 / 20</span>
+      </div>
+      
+        <div class="row">
+          <span class="crit">Closing-Techniken bekannt &amp; angewendet</span>
+          <span class="w-badge">×3</span>
+          <div class="stars" id="stars-closing-0">
+            <div class="star" data-sec="closing" data-idx="0" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="closing" data-idx="0" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="closing" data-idx="0" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="closing" data-idx="0" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="closing" data-idx="0" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Kunde aktiv führen (gegen ersten Impuls)</span>
+          <span class="w-badge">×3</span>
+          <div class="stars" id="stars-closing-1">
+            <div class="star" data-sec="closing" data-idx="1" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="closing" data-idx="1" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="closing" data-idx="1" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="closing" data-idx="1" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="closing" data-idx="1" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Entscheidungsträger identifizieren &amp; einbinden</span>
+          <span class="w-badge">×2</span>
+          <div class="stars" id="stars-closing-2">
+            <div class="star" data-sec="closing" data-idx="2" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="closing" data-idx="2" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="closing" data-idx="2" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="closing" data-idx="2" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="closing" data-idx="2" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Upselling-Denke vorhanden</span>
+          <span class="w-badge">×2</span>
+          <div class="stars" id="stars-closing-3">
+            <div class="star" data-sec="closing" data-idx="3" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="closing" data-idx="3" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="closing" data-idx="3" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="closing" data-idx="3" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="closing" data-idx="3" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+    </div><div class="section">
+      <div class="sec-head">
+        <span class="sec-title">OTSG Fit &amp; Soft Skills</span>
+        <span class="sec-weight">Weight: 10 pts</span>
+        <span class="sec-score" id="ss-fit">0 / 10</span>
+      </div>
+      
+        <div class="row">
+          <span class="crit">B2B-Fit / erklärungsbedürftige Produkte</span>
+          <span class="w-badge">×2</span>
+          <div class="stars" id="stars-fit-0">
+            <div class="star" data-sec="fit" data-idx="0" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="fit" data-idx="0" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="fit" data-idx="0" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="fit" data-idx="0" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="fit" data-idx="0" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Langer Entscheidungszyklus tolerierbar</span>
+          <span class="w-badge">×2</span>
+          <div class="stars" id="stars-fit-1">
+            <div class="star" data-sec="fit" data-idx="1" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="fit" data-idx="1" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="fit" data-idx="1" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="fit" data-idx="1" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="fit" data-idx="1" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Kommunikation: direkt, klar, selbstsicher</span>
+          <span class="w-badge">×2</span>
+          <div class="stars" id="stars-fit-2">
+            <div class="star" data-sec="fit" data-idx="2" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="fit" data-idx="2" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="fit" data-idx="2" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="fit" data-idx="2" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="fit" data-idx="2" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+    </div><div class="section">
+      <div class="sec-head">
+        <span class="sec-title">Language Skills</span>
+        <span class="sec-weight">Weight: 5 pts</span>
+        <span class="sec-score" id="ss-lang">0 / 5</span>
+      </div>
+      
+        <div class="row">
+          <span class="crit">Deutsch: akzentfrei / muttersprachlich</span>
+          <span class="w-badge">×3</span>
+          <div class="stars" id="stars-lang-0">
+            <div class="star" data-sec="lang" data-idx="0" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="lang" data-idx="0" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="lang" data-idx="0" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="lang" data-idx="0" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="lang" data-idx="0" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Englisch: kommunikationsfähig</span>
+          <span class="w-badge">×1</span>
+          <div class="stars" id="stars-lang-1">
+            <div class="star" data-sec="lang" data-idx="1" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="lang" data-idx="1" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="lang" data-idx="1" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="lang" data-idx="1" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="lang" data-idx="1" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <span class="crit">Weitere Sprachen (PL, TR etc.) – Bonus</span>
+          <span class="w-badge">×1</span>
+          <div class="stars" id="stars-lang-2">
+            <div class="star" data-sec="lang" data-idx="2" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="lang" data-idx="2" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="lang" data-idx="2" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="lang" data-idx="2" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="lang" data-idx="2" data-val="5" onclick="rate(this)">5</div>
+          </div>
+        </div>
+      
+    </div></div>
+
+<div class="section">
+  <div class="sec-head"><span class="sec-title">🚫 K.O.-Kriterien</span><span class="sec-weight">Automatischer Ausschluss</span></div>
+  <div id="ko-flags">
+    <div class="koflag"><span class="ko-label">Kein CRM-Wissen / nie genutzt</span><button class="ko-btn" onclick="toggleKO(this)">Kein K.O.</button></div>
+    <div class="koflag"><span class="ko-label">"Ich bin eher Beziehungsmensch, kein Closer"</span><button class="ko-btn" onclick="toggleKO(this)">Kein K.O.</button></div>
+    <div class="koflag"><span class="ko-label">Keine konkreten Zahlen zum eigenen Track Record</span><button class="ko-btn" onclick="toggleKO(this)">Kein K.O.</button></div>
+    <div class="koflag"><span class="ko-label">Kein Eigenantrieb / passiv im Gespräch</span><button class="ko-btn" onclick="toggleKO(this)">Kein K.O.</button></div>
+    <div class="koflag"><span class="ko-label">Misserfolge werden externalisiert (Ausreden)</span><button class="ko-btn" onclick="toggleKO(this)">Kein K.O.</button></div>
+    <div class="koflag"><span class="ko-label">Starker Akzent – Deutsch nicht kundentauglich</span><button class="ko-btn" onclick="toggleKO(this)">Kein K.O.</button></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-head"><span class="sec-title">Finale Empfehlung</span></div>
+  <div class="verdict-pad">
+    <div class="verdict-bar">
+      <div class="vbtn" id="v-hire" onclick="setVerdict(&#39;hire&#39;)">✓ Hire</div>
+      <div class="vbtn" id="v-r2" onclick="setVerdict(&#39;r2&#39;)">→ Round 2</div>
+      <div class="vbtn" id="v-hold" onclick="setVerdict(&#39;hold&#39;)">⊘ On Hold</div>
+      <div class="vbtn" id="v-no" onclick="setVerdict(&#39;no&#39;)">✕ No Go</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-head"><span class="sec-title">Notizen &amp; Begründung</span></div>
+  <textarea class="notes-area" id="final-notes" placeholder="Key observations, nächste Schritte, offene Fragen..."></textarea>
+</div>
+
+<div class="btn-row">
+  <button class="export-btn" onclick="exportSummary()">📋 Scoring kopieren</button>
+  <button class="export-btn" onclick="generateEnglishSummary()">🇬🇧 Auswertung auf Englisch</button>
+</div>
+
+<div class="summary-box" id="summary-box">
+  <div class="sum-label">CANDIDATE SUMMARY — ENGLISH (copied to clipboard)</div>
+  <div class="sum-text" id="sum-text"></div>
+</div>
+
+</div>
+<script>
+const SECTIONS=[
+  {id:'mindset',title:'Mindset & Motivation',weight:20,criteria:[
+    {label:'Intrinsische Motivation / Eigenantrieb',weight:3},
+    {label:'Umgang mit Rückschlägen (Resilienz)',weight:3},
+    {label:'Klares Karriereziel & Ambitionen',weight:2},
+    {label:'Energie & Auftreten im Gespräch',weight:2}
+  ]},
+  {id:'salesexp',title:'Sales Experience & Track Record',weight:25,criteria:[
+    {label:'Ticket-Größe & Komplexität (B2B)',weight:3},
+    {label:'Strukturierter Sales-Prozess (Opener → Close)',weight:3},
+    {label:'Einwandbehandlung – reale Beispiele',weight:2},
+    {label:'Call-Volumen & Disziplin (Calls/Tag)',weight:2}
+  ]},
+  {id:'crm',title:'CRM & Pipeline Discipline',weight:20,criteria:[
+    {label:'CRM-Erfahrung (aktive Nutzung, korrekte Stages)',weight:3},
+    {label:'Dokumentationsqualität & Notizen-Hygiene',weight:2},
+    {label:'Follow-Up-Konsequenz (5–12 Kontakte)',weight:2},
+    {label:'Erkennung toter Deals / Pipeline-Pflege',weight:2}
+  ]},
+  {id:'closing',title:'Closing & Leadership',weight:20,criteria:[
+    {label:'Closing-Techniken bekannt & angewendet',weight:3},
+    {label:'Kunde aktiv führen (gegen ersten Impuls)',weight:3},
+    {label:'Entscheidungsträger identifizieren & einbinden',weight:2},
+    {label:'Upselling-Denke vorhanden',weight:2}
+  ]},
+  {id:'fit',title:'OTSG Fit & Soft Skills',weight:10,criteria:[
+    {label:'B2B-Fit / erklärungsbedürftige Produkte',weight:2},
+    {label:'Langer Entscheidungszyklus tolerierbar',weight:2},
+    {label:'Kommunikation: direkt, klar, selbstsicher',weight:2}
+  ]},
+  {id:'lang',title:'Language Skills',weight:5,criteria:[
+    {label:'Deutsch: akzentfrei / muttersprachlich',weight:3},
+    {label:'Englisch: kommunikationsfähig',weight:1},
+    {label:'Weitere Sprachen (PL, TR etc.) – Bonus',weight:1}
+  ]}
+];
+
+const scores={};
+let verdict=null;
+const koFlags={};
+
+function buildSections(){
+  const container=document.getElementById('sections');
+  SECTIONS.forEach(sec=>{
+    scores[sec.id]={};
+    sec.criteria.forEach((_,i)=>scores[sec.id][i]=0);
+    const div=document.createElement('div');
+    div.className='section';
+    div.innerHTML=`
+      <div class="sec-head">
+        <span class="sec-title">${sec.title}</span>
+        <span class="sec-weight">Weight: ${sec.weight} pts</span>
+        <span class="sec-score" id="ss-${sec.id}">0 / ${sec.weight}</span>
+      </div>
+      ${sec.criteria.map((c,i)=>`
+        <div class="row">
+          <span class="crit">${c.label}</span>
+          <span class="w-badge">×${c.weight}</span>
+          <div class="stars" id="stars-${sec.id}-${i}">
+            ${[1,2,3,4,5].map(v=>`<div class="star" data-sec="${sec.id}" data-idx="${i}" data-val="${v}" onclick="rate(this)">${v}</div>`).join('')}
+          </div>
+        </div>
+      `).join('')}
+    `;
+    container.appendChild(div);
+  });
+}
+
+function rate(el){
+  const sec=el.dataset.sec,idx=el.dataset.idx,val=parseInt(el.dataset.val);
+  scores[sec][idx]=val;
+  document.querySelectorAll(`#stars-${sec}-${idx} .star`).forEach(s=>{
+    const v=parseInt(s.dataset.val);
+    s.className='star'+(v<=val?` active-${val}`:'');
+  });
+  recalc();
+}
+
+function getScoreData(){
+  let grand=0;
+  const cats={};
+  SECTIONS.forEach(sec=>{
+    const maxRaw=sec.criteria.reduce((a,c)=>a+c.weight*5,0);
+    const raw=sec.criteria.reduce((a,c,i)=>a+c.weight*(scores[sec.id][i]||0),0);
+    const pts=maxRaw>0?Math.round((raw/maxRaw)*sec.weight):0;
+    grand+=pts;
+    cats[sec.id]={pts,max:sec.weight,title:sec.title};
+    const el=document.getElementById(`ss-${sec.id}`);
+    if(el)el.textContent=`${pts} / ${sec.weight}`;
+  });
+  return{grand,cats};
+}
+
+function recalc(){
+  const{grand}=getScoreData();
+  const hasKO=Object.values(koFlags).some(v=>v);
+  document.getElementById('total-score').textContent=hasKO?'K.O.':grand;
+  const prog=document.getElementById('prog');
+  const label=document.getElementById('verdict-label');
+  if(hasKO){prog.style.width='100%';prog.style.background='#E24B4A';label.style.color='#791F1F';label.textContent='Disqualified';}
+  else if(grand>=80){prog.style.width=grand+'%';prog.style.background='#639922';label.style.color='#27500A';label.textContent='Strong Hire';}
+  else if(grand>=65){prog.style.width=grand+'%';prog.style.background='#7F77DD';label.style.color='#3C3489';label.textContent='Round 2';}
+  else if(grand>=50){prog.style.width=grand+'%';prog.style.background='#BA7517';label.style.color='#633806';label.textContent='On Hold';}
+  else{prog.style.width=grand+'%';prog.style.background='#E24B4A';label.style.color='#791F1F';label.textContent='No Go';}
+}
+
+function toggleKO(btn){
+  const lbl=btn.previousElementSibling.textContent;
+  const isKO=btn.classList.toggle('ko-yes');
+  btn.textContent=isKO?'⚠ K.O. set':'No K.O.';
+  koFlags[lbl]=isKO;
+  recalc();
+}
+
+function setVerdict(v){
+  verdict=v;
+  ['hire','r2','hold','no'].forEach(k=>{
+    document.getElementById('v-'+k).className='vbtn'+(k===v?` sel-${k}`:'');
+  });
+}
+
+function exportSummary(){
+  const{grand,cats}=getScoreData();
+  const hasKO=Object.values(koFlags).some(v=>v);
+  const koList=Object.entries(koFlags).filter(([,v])=>v).map(([k])=>k).join(', ')||'None';
+  const vMap={hire:'Hire',r2:'Round 2',hold:'On Hold',no:'No Go'};
+  const notes=document.getElementById('final-notes').value||'–';
+  const breakdown=SECTIONS.map(s=>`${cats[s.id].title}: ${cats[s.id].pts}/${cats[s.id].max}`).join('\n');
+  const text=`OTSG Candidate Scoring
+Candidate: ${document.getElementById('cname').value||'–'} | Date: ${document.getElementById('cdate').value||'–'} | Interviewer: ${document.getElementById('cint').value||'–'}
+
+SCORE: ${hasKO?'K.O. – Disqualified':grand+'/100'}
+Recommendation: ${vMap[verdict]||'–'}
+
+Breakdown:
+${breakdown}
+
+K.O. Flags: ${koList}
+
+Notes: ${notes}`;
+  navigator.clipboard.writeText(text).then(()=>alert('Scoring copied!')).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=text;document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');document.body.removeChild(ta);
+    alert('Scoring copied!');
+  });
+}
+
+function generateEnglishSummary(){
+  const{grand,cats}=getScoreData();
+  const hasKO=Object.values(koFlags).some(v=>v);
+  const name=document.getElementById('cname').value||'The candidate';
+  const notes=document.getElementById('final-notes').value||'';
+  const vMap={hire:'Hire',r2:'Round 2',hold:'On Hold',no:'No Go'};
+  const vLabel=hasKO?'No Go — K.O. flag triggered':(vMap[verdict]||'pending');
+
+  function pct(c){return Math.round((c.pts/c.max)*100);}
+
+  const strengths=[];
+  const risks=[];
+  if(pct(cats.mindset)>=80) strengths.push('strong mindset and resilience');
+  else if(pct(cats.mindset)<50) risks.push('low motivation and drive');
+  if(pct(cats.salesexp)>=80) strengths.push('solid B2B sales track record');
+  else if(pct(cats.salesexp)<50) risks.push('limited or unproven sales experience');
+  if(pct(cats.crm)>=80) strengths.push('disciplined CRM usage');
+  else if(pct(cats.crm)<50) risks.push('weak CRM discipline');
+  if(pct(cats.closing)>=80) strengths.push('proven closing and leadership skills');
+  else if(pct(cats.closing)<50) risks.push('limited active closing experience');
+  if(pct(cats.lang)>=80) strengths.push('near-native German');
+  else if(pct(cats.lang)<50) risks.push('language barriers for DACH customer contact');
+
+  const koActive=Object.entries(koFlags).filter(([,v])=>v).map(([k])=>k);
+
+  let s=`${name} scored ${hasKO?'K.O.':grand+'/100'} in the OTSG candidate assessment`;
+  s+=` (Mindset ${cats.mindset.pts}/${cats.mindset.max} — Sales ${cats.salesexp.pts}/${cats.salesexp.max} — CRM ${cats.crm.pts}/${cats.crm.max} — Closing ${cats.closing.pts}/${cats.closing.max} — Fit ${cats.fit.pts}/${cats.fit.max} — Language ${cats.lang.pts}/${cats.lang.max}).`;
+  if(strengths.length) s+=` Key strengths: ${strengths.join(', ')}.`;
+  if(risks.length) s+=` Key risks: ${risks.join(', ')}.`;
+  if(koActive.length) s+=` K.O. flags triggered: ${koActive.join('; ')}.`;
+  if(notes.trim()) s+=` Interview notes: ${notes.trim().replace(/[\n\r]+/g,' | ')}.`;
+  s+=` Verdict: ${vLabel}.`;
+
+  document.getElementById('sum-text').textContent=s;
+  document.getElementById('summary-box').style.display='block';
+  navigator.clipboard.writeText(s).catch(()=>{});
+}
+
+buildSections();
+recalc();
+</script>
+
+
+</body></html>
