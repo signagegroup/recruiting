@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- saved from url=(0066)file:///Users/canberry_can/Downloads/otsg_candidate_scoring_3.html -->
-<html lang="de"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="de">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OTSG Candidate Scoring</title>
 <style>
@@ -60,245 +60,28 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f3;color:#1a
 <div class="wrap">
 
 <div class="logo-bar">
-  <img src="./OTSG Candidate Scoring_files/cropped-THE-SIGNAGE-GROUP-Logo-black.png" alt="The Signage Group">
+  <img src="https://signage-group.com/wp-content/uploads/2025/08/cropped-THE-SIGNAGE-GROUP-Logo-black.png" alt="The Signage Group" />
   <span class="logo-bar-label">Candidate Scoring Tool</span>
 </div>
 
 <div class="header">
   <div class="meta">
-    <input id="cname" placeholder="Kandidat: Name">
-    <input id="cdate" placeholder="Datum: TT.MM.JJJJ">
-    <input id="crole" placeholder="Position" value="Sales Manager – OTSG">
-    <input id="cint" placeholder="Interviewer" value="Can">
+    <input id="cname" placeholder="Kandidat: Name" />
+    <input id="cdate" placeholder="Datum: TT.MM.JJJJ" />
+    <input id="crole" placeholder="Position" value="Sales Manager – OTSG" />
+    <input id="cint" placeholder="Interviewer" value="Can" />
+<input type="text" id="cfathom" placeholder="Fathom-Link (optional)" style="width:100%;margin-top:8px;padding:8px;border:0.5px solid #ccc;border-radius:6px;font-size:13px">
   </div>
   <div class="scorebox">
     <div class="label">Gesamt-Score</div>
     <div class="total" id="total-score">0</div>
     <div style="font-size:11px;color:#888">/ 100 Pkt.</div>
-    <div class="verdict" id="verdict-label" style="color: rgb(121, 31, 31);">No Go</div>
-    <div class="progress-bar"><div class="progress-fill" id="prog" style="width: 0%; background: rgb(226, 75, 74);"></div></div>
+    <div class="verdict" id="verdict-label">–</div>
+    <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%;background:#888"></div></div>
   </div>
 </div>
 
-<div id="sections"><div class="section">
-      <div class="sec-head">
-        <span class="sec-title">Mindset &amp; Motivation</span>
-        <span class="sec-weight">Weight: 20 pts</span>
-        <span class="sec-score" id="ss-mindset">0 / 20</span>
-      </div>
-      
-        <div class="row">
-          <span class="crit">Intrinsische Motivation / Eigenantrieb</span>
-          <span class="w-badge">×3</span>
-          <div class="stars" id="stars-mindset-0">
-            <div class="star" data-sec="mindset" data-idx="0" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="mindset" data-idx="0" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="mindset" data-idx="0" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="mindset" data-idx="0" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="mindset" data-idx="0" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Umgang mit Rückschlägen (Resilienz)</span>
-          <span class="w-badge">×3</span>
-          <div class="stars" id="stars-mindset-1">
-            <div class="star" data-sec="mindset" data-idx="1" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="mindset" data-idx="1" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="mindset" data-idx="1" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="mindset" data-idx="1" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="mindset" data-idx="1" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Klares Karriereziel &amp; Ambitionen</span>
-          <span class="w-badge">×2</span>
-          <div class="stars" id="stars-mindset-2">
-            <div class="star" data-sec="mindset" data-idx="2" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="mindset" data-idx="2" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="mindset" data-idx="2" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="mindset" data-idx="2" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="mindset" data-idx="2" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Energie &amp; Auftreten im Gespräch</span>
-          <span class="w-badge">×2</span>
-          <div class="stars" id="stars-mindset-3">
-            <div class="star" data-sec="mindset" data-idx="3" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="mindset" data-idx="3" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="mindset" data-idx="3" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="mindset" data-idx="3" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="mindset" data-idx="3" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-    </div><div class="section">
-      <div class="sec-head">
-        <span class="sec-title">Sales Experience &amp; Track Record</span>
-        <span class="sec-weight">Weight: 25 pts</span>
-        <span class="sec-score" id="ss-salesexp">0 / 25</span>
-      </div>
-      
-        <div class="row">
-          <span class="crit">Ticket-Größe &amp; Komplexität (B2B)</span>
-          <span class="w-badge">×3</span>
-          <div class="stars" id="stars-salesexp-0">
-            <div class="star" data-sec="salesexp" data-idx="0" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="salesexp" data-idx="0" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="salesexp" data-idx="0" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="salesexp" data-idx="0" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="salesexp" data-idx="0" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Strukturierter Sales-Prozess (Opener → Close)</span>
-          <span class="w-badge">×3</span>
-          <div class="stars" id="stars-salesexp-1">
-            <div class="star" data-sec="salesexp" data-idx="1" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="salesexp" data-idx="1" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="salesexp" data-idx="1" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="salesexp" data-idx="1" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="salesexp" data-idx="1" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Einwandbehandlung – reale Beispiele</span>
-          <span class="w-badge">×2</span>
-          <div class="stars" id="stars-salesexp-2">
-            <div class="star" data-sec="salesexp" data-idx="2" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="salesexp" data-idx="2" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="salesexp" data-idx="2" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="salesexp" data-idx="2" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="salesexp" data-idx="2" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Call-Volumen &amp; Disziplin (Calls/Tag)</span>
-          <span class="w-badge">×2</span>
-          <div class="stars" id="stars-salesexp-3">
-            <div class="star" data-sec="salesexp" data-idx="3" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="salesexp" data-idx="3" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="salesexp" data-idx="3" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="salesexp" data-idx="3" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="salesexp" data-idx="3" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-    </div><div class="section">
-      <div class="sec-head">
-        <span class="sec-title">CRM &amp; Pipeline Discipline</span>
-        <span class="sec-weight">Weight: 20 pts</span>
-        <span class="sec-score" id="ss-crm">0 / 20</span>
-      </div>
-      
-        <div class="row">
-          <span class="crit">CRM-Erfahrung (aktive Nutzung, korrekte Stages)</span>
-          <span class="w-badge">×3</span>
-          <div class="stars" id="stars-crm-0">
-            <div class="star" data-sec="crm" data-idx="0" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="crm" data-idx="0" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="crm" data-idx="0" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="crm" data-idx="0" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="crm" data-idx="0" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Dokumentationsqualität &amp; Notizen-Hygiene</span>
-          <span class="w-badge">×2</span>
-          <div class="stars" id="stars-crm-1">
-            <div class="star" data-sec="crm" data-idx="1" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="crm" data-idx="1" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="crm" data-idx="1" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="crm" data-idx="1" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="crm" data-idx="1" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Follow-Up-Konsequenz (5–12 Kontakte)</span>
-          <span class="w-badge">×2</span>
-          <div class="stars" id="stars-crm-2">
-            <div class="star" data-sec="crm" data-idx="2" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="crm" data-idx="2" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="crm" data-idx="2" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="crm" data-idx="2" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="crm" data-idx="2" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Erkennung toter Deals / Pipeline-Pflege</span>
-          <span class="w-badge">×2</span>
-          <div class="stars" id="stars-crm-3">
-            <div class="star" data-sec="crm" data-idx="3" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="crm" data-idx="3" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="crm" data-idx="3" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="crm" data-idx="3" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="crm" data-idx="3" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-    </div><div class="section">
-      <div class="sec-head">
-        <span class="sec-title">Closing &amp; Leadership</span>
-        <span class="sec-weight">Weight: 20 pts</span>
-        <span class="sec-score" id="ss-closing">0 / 20</span>
-      </div>
-      
-        <div class="row">
-          <span class="crit">Closing-Techniken bekannt &amp; angewendet</span>
-          <span class="w-badge">×3</span>
-          <div class="stars" id="stars-closing-0">
-            <div class="star" data-sec="closing" data-idx="0" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="closing" data-idx="0" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="closing" data-idx="0" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="closing" data-idx="0" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="closing" data-idx="0" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Kunde aktiv führen (gegen ersten Impuls)</span>
-          <span class="w-badge">×3</span>
-          <div class="stars" id="stars-closing-1">
-            <div class="star" data-sec="closing" data-idx="1" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="closing" data-idx="1" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="closing" data-idx="1" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="closing" data-idx="1" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="closing" data-idx="1" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Entscheidungsträger identifizieren &amp; einbinden</span>
-          <span class="w-badge">×2</span>
-          <div class="stars" id="stars-closing-2">
-            <div class="star" data-sec="closing" data-idx="2" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="closing" data-idx="2" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="closing" data-idx="2" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="closing" data-idx="2" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="closing" data-idx="2" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Upselling-Denke vorhanden</span>
-          <span class="w-badge">×2</span>
-          <div class="stars" id="stars-closing-3">
-            <div class="star" data-sec="closing" data-idx="3" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="closing" data-idx="3" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="closing" data-idx="3" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="closing" data-idx="3" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="closing" data-idx="3" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-    </div><div class="section">
-      <div class="sec-head">
-        <span class="sec-title">OTSG Fit &amp; Soft Skills</span>
-        <span class="sec-weight">Weight: 10 pts</span>
-        <span class="sec-score" id="ss-fit">0 / 10</span>
-      </div>
-      
-        <div class="row">
-          <span class="crit">B2B-Fit / erklärungsbedürftige Produkte</span>
-          <span class="w-badge">×2</span>
-          <div class="stars" id="stars-fit-0">
-            <div class="star" data-sec="fit" data-idx="0" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="fit" data-idx="0" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="fit" data-idx="0" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="fit" data-idx="0" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="fit" data-idx="0" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Langer Entscheidungszyklus tolerierbar</span>
-          <span class="w-badge">×2</span>
-          <div class="stars" id="stars-fit-1">
-            <div class="star" data-sec="fit" data-idx="1" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="fit" data-idx="1" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="fit" data-idx="1" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="fit" data-idx="1" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="fit" data-idx="1" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Kommunikation: direkt, klar, selbstsicher</span>
-          <span class="w-badge">×2</span>
-          <div class="stars" id="stars-fit-2">
-            <div class="star" data-sec="fit" data-idx="2" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="fit" data-idx="2" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="fit" data-idx="2" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="fit" data-idx="2" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="fit" data-idx="2" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-    </div><div class="section">
-      <div class="sec-head">
-        <span class="sec-title">Language Skills</span>
-        <span class="sec-weight">Weight: 5 pts</span>
-        <span class="sec-score" id="ss-lang">0 / 5</span>
-      </div>
-      
-        <div class="row">
-          <span class="crit">Deutsch: akzentfrei / muttersprachlich</span>
-          <span class="w-badge">×3</span>
-          <div class="stars" id="stars-lang-0">
-            <div class="star" data-sec="lang" data-idx="0" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="lang" data-idx="0" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="lang" data-idx="0" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="lang" data-idx="0" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="lang" data-idx="0" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Englisch: kommunikationsfähig</span>
-          <span class="w-badge">×1</span>
-          <div class="stars" id="stars-lang-1">
-            <div class="star" data-sec="lang" data-idx="1" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="lang" data-idx="1" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="lang" data-idx="1" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="lang" data-idx="1" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="lang" data-idx="1" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-        <div class="row">
-          <span class="crit">Weitere Sprachen (PL, TR etc.) – Bonus</span>
-          <span class="w-badge">×1</span>
-          <div class="stars" id="stars-lang-2">
-            <div class="star" data-sec="lang" data-idx="2" data-val="1" onclick="rate(this)">1</div><div class="star" data-sec="lang" data-idx="2" data-val="2" onclick="rate(this)">2</div><div class="star" data-sec="lang" data-idx="2" data-val="3" onclick="rate(this)">3</div><div class="star" data-sec="lang" data-idx="2" data-val="4" onclick="rate(this)">4</div><div class="star" data-sec="lang" data-idx="2" data-val="5" onclick="rate(this)">5</div>
-          </div>
-        </div>
-      
-    </div></div>
+<div id="sections"></div>
 
 <div class="section">
   <div class="sec-head"><span class="sec-title">🚫 K.O.-Kriterien</span><span class="sec-weight">Automatischer Ausschluss</span></div>
@@ -316,22 +99,24 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f3;color:#1a
   <div class="sec-head"><span class="sec-title">Finale Empfehlung</span></div>
   <div class="verdict-pad">
     <div class="verdict-bar">
-      <div class="vbtn" id="v-hire" onclick="setVerdict(&#39;hire&#39;)">✓ Hire</div>
-      <div class="vbtn" id="v-r2" onclick="setVerdict(&#39;r2&#39;)">→ Round 2</div>
-      <div class="vbtn" id="v-hold" onclick="setVerdict(&#39;hold&#39;)">⊘ On Hold</div>
-      <div class="vbtn" id="v-no" onclick="setVerdict(&#39;no&#39;)">✕ No Go</div>
+      <div class="vbtn" id="v-hire" onclick="setVerdict('hire')">✓ Hire</div>
+      <div class="vbtn" id="v-r2" onclick="setVerdict('r2')">→ Round 2</div>
+      <div class="vbtn" id="v-hold" onclick="setVerdict('hold')">⊘ On Hold</div>
+      <div class="vbtn" id="v-no" onclick="setVerdict('no')">✕ No Go</div>
     </div>
   </div>
 </div>
 
 <div class="section">
-  <div class="sec-head"><span class="sec-title">Notizen &amp; Begründung</span></div>
+  <div class="sec-head"><span class="sec-title">Notizen & Begründung</span></div>
   <textarea class="notes-area" id="final-notes" placeholder="Key observations, nächste Schritte, offene Fragen..."></textarea>
 </div>
 
 <div class="btn-row">
   <button class="export-btn" onclick="exportSummary()">📋 Scoring kopieren</button>
+  <button class="export-btn" onclick="openInClaude()" style="background:#1a1a1a;color:#fff;border-color:#1a1a1a">✦ In Claude öffnen</button>
   <button class="export-btn" onclick="generateEnglishSummary()">🇬🇧 Auswertung auf Englisch</button>
+  <button class="export-btn" onclick="downloadFile()" style="background:#f5f5f3;border-color:#bbb">⬇ Download</button>
 </div>
 
 <div class="summary-box" id="summary-box">
@@ -384,6 +169,9 @@ const koFlags={};
 
 function buildSections(){
   const container=document.getElementById('sections');
+  if(container.getAttribute('data-built')==='1'){return;} // guard: never double-render
+  container.innerHTML=''; // clear any pre-existing content
+  container.setAttribute('data-built','1');
   SECTIONS.forEach(sec=>{
     scores[sec.id]={};
     sec.criteria.forEach((_,i)=>scores[sec.id][i]=0);
@@ -462,25 +250,25 @@ function setVerdict(v){
   });
 }
 
-function exportSummary(){
+function buildScoringText(){
   const{grand,cats}=getScoreData();
   const hasKO=Object.values(koFlags).some(v=>v);
   const koList=Object.entries(koFlags).filter(([,v])=>v).map(([k])=>k).join(', ')||'None';
   const vMap={hire:'Hire',r2:'Round 2',hold:'On Hold',no:'No Go'};
   const notes=document.getElementById('final-notes').value||'–';
+  const fathom=(document.getElementById('cfathom')||{}).value||'';
   const breakdown=SECTIONS.map(s=>`${cats[s.id].title}: ${cats[s.id].pts}/${cats[s.id].max}`).join('\n');
-  const text=`OTSG Candidate Scoring
-Candidate: ${document.getElementById('cname').value||'–'} | Date: ${document.getElementById('cdate').value||'–'} | Interviewer: ${document.getElementById('cint').value||'–'}
+  return `OTSG Candidate Scoring\nCandidate: ${document.getElementById('cname').value||'–'} | Date: ${document.getElementById('cdate').value||'–'} | Interviewer: ${document.getElementById('cint').value||'–'}\n\nSCORE: ${hasKO?'K.O. – Disqualified':grand+'/100'}\nRecommendation: ${vMap[verdict]||'–'}\n\nBreakdown:\n${breakdown}\n\nK.O. Flags: ${koList}\n\nNotes: ${notes}${fathom?'\n\n'+fathom:''}`;
+}
 
-SCORE: ${hasKO?'K.O. – Disqualified':grand+'/100'}
-Recommendation: ${vMap[verdict]||'–'}
+function openInClaude(){
+  const text='/fathom\n\n'+buildScoringText();
+  const url='https://claude.ai/new?q='+encodeURIComponent(text);
+  window.open(url,'_blank');
+}
 
-Breakdown:
-${breakdown}
-
-K.O. Flags: ${koList}
-
-Notes: ${notes}`;
+function exportSummary(){
+  const text=buildScoringText();
   navigator.clipboard.writeText(text).then(()=>alert('Scoring copied!')).catch(()=>{
     const ta=document.createElement('textarea');
     ta.value=text;document.body.appendChild(ta);ta.select();
@@ -527,9 +315,21 @@ function generateEnglishSummary(){
   navigator.clipboard.writeText(s).catch(()=>{});
 }
 
+function downloadFile(){
+  const src=document.documentElement.outerHTML;
+  const blob=new Blob([src],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='OTSG_Candidate_Scoring.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 buildSections();
 recalc();
 </script>
-
-
-</body></html>
+</body>
+</html>
