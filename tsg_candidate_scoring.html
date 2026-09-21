@@ -54,6 +54,15 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f3;color:#1a
 .summary-box .sum-label{font-size:11px;font-weight:500;color:#888;margin-bottom:8px;letter-spacing:0.04em}
 .summary-box .sum-text{color:#2c2c2a}
 .summary-box .sum-copy{margin-top:10px;font-size:11px;color:#639922;font-weight:500}
+
+.tabs{display:flex;gap:6px;margin-bottom:1.25rem}
+.tab{flex:1;padding:10px 12px;border:0.5px solid #ccc;border-radius:10px;background:#fff;color:#888;font-size:13px;font-weight:500;cursor:pointer;text-align:center}
+.tab small{display:block;font-size:10px;font-weight:400;color:#aaa;margin-top:2px}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.tab.active small{color:#bbb}
+.hint{font-size:11px;color:#888;display:block;margin-top:2px;line-height:1.35}
+.ko-skill{font-size:10px;font-weight:500;color:#791F1F;background:#FCEBEB;border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:middle}
+.passbar{font-size:11px;color:#888;margin-top:6px}
 </style>
 </head>
 <body>
@@ -62,6 +71,12 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f3;color:#1a
 <div class="logo-bar">
   <img src="https://signage-group.com/wp-content/uploads/2025/08/cropped-THE-SIGNAGE-GROUP-Logo-black.png" alt="The Signage Group" />
   <span class="logo-bar-label">Candidate Scoring Tool</span>
+</div>
+
+<div class="tabs" id="tabs">
+  <div class="tab active" data-p="sm" onclick="switchProfile('sm')">Sales Manager<small>Sygns / Canberry</small></div>
+  <div class="tab" data-p="p1" onclick="switchProfile('p1')">Werbetechnik KAM<small>Strategic Client Director · P1</small></div>
+  <div class="tab" data-p="p2" onclick="switchProfile('p2')">Hunter KAM<small>Strategic Client Director · P2</small></div>
 </div>
 
 <div class="header">
@@ -85,14 +100,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f3;color:#1a
 
 <div class="section">
   <div class="sec-head"><span class="sec-title">🚫 K.O.-Kriterien</span><span class="sec-weight">Automatischer Ausschluss</span></div>
-  <div id="ko-flags">
-    <div class="koflag"><span class="ko-label">Kein CRM-Wissen / nie genutzt</span><button class="ko-btn" onclick="toggleKO(this)">Kein K.O.</button></div>
-    <div class="koflag"><span class="ko-label">"Ich bin eher Beziehungsmensch, kein Closer"</span><button class="ko-btn" onclick="toggleKO(this)">Kein K.O.</button></div>
-    <div class="koflag"><span class="ko-label">Keine konkreten Zahlen zum eigenen Track Record</span><button class="ko-btn" onclick="toggleKO(this)">Kein K.O.</button></div>
-    <div class="koflag"><span class="ko-label">Kein Eigenantrieb / passiv im Gespräch</span><button class="ko-btn" onclick="toggleKO(this)">Kein K.O.</button></div>
-    <div class="koflag"><span class="ko-label">Misserfolge werden externalisiert (Ausreden)</span><button class="ko-btn" onclick="toggleKO(this)">Kein K.O.</button></div>
-    <div class="koflag"><span class="ko-label">Starker Akzent – Deutsch nicht kundentauglich</span><button class="ko-btn" onclick="toggleKO(this)">Kein K.O.</button></div>
-  </div>
+  <div id="ko-flags"></div>
 </div>
 
 <div class="section">
@@ -126,80 +134,118 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f3;color:#1a
 
 </div>
 <script>
-const SECTIONS=[
-  {id:'mindset',title:'Mindset & Motivation',weight:20,criteria:[
-    {label:'Intrinsische Motivation / Eigenantrieb',weight:3},
-    {label:'Umgang mit Rückschlägen (Resilienz)',weight:3},
-    {label:'Klares Karriereziel & Ambitionen',weight:2},
-    {label:'Energie & Auftreten im Gespräch',weight:2}
-  ]},
-  {id:'salesexp',title:'Sales Experience & Track Record',weight:25,criteria:[
-    {label:'Ticket-Größe & Komplexität (B2B)',weight:3},
-    {label:'Strukturierter Sales-Prozess (Opener → Close)',weight:3},
-    {label:'Einwandbehandlung – reale Beispiele',weight:2},
-    {label:'Call-Volumen & Disziplin (Calls/Tag)',weight:2}
-  ]},
-  {id:'crm',title:'CRM & Pipeline Discipline',weight:20,criteria:[
-    {label:'CRM-Erfahrung (aktive Nutzung, korrekte Stages)',weight:3},
-    {label:'Dokumentationsqualität & Notizen-Hygiene',weight:2},
-    {label:'Follow-Up-Konsequenz (5–12 Kontakte)',weight:2},
-    {label:'Erkennung toter Deals / Pipeline-Pflege',weight:2}
-  ]},
-  {id:'closing',title:'Closing & Leadership',weight:20,criteria:[
-    {label:'Closing-Techniken bekannt & angewendet',weight:3},
-    {label:'Kunde aktiv führen (gegen ersten Impuls)',weight:3},
-    {label:'Entscheidungsträger identifizieren & einbinden',weight:2},
-    {label:'Upselling-Denke vorhanden',weight:2}
-  ]},
-  {id:'fit',title:'OTSG Fit & Soft Skills',weight:10,criteria:[
-    {label:'B2B-Fit / erklärungsbedürftige Produkte',weight:2},
-    {label:'Langer Entscheidungszyklus tolerierbar',weight:2},
-    {label:'Kommunikation: direkt, klar, selbstsicher',weight:2}
-  ]},
-  {id:'lang',title:'Language Skills',weight:5,criteria:[
-    {label:'Deutsch: akzentfrei / muttersprachlich',weight:3},
-    {label:'Englisch: kommunikationsfähig',weight:1},
-    {label:'Weitere Sprachen (PL, TR etc.) – Bonus',weight:1}
-  ]}
-];
+const PROFILES={
+ sm:{
+  name:'Sales Manager – OTSG', short:'Sales Manager', scale:'sm',
+  sections:[
+   {id:'mindset',title:'Mindset & Motivation',weight:20,criteria:[
+     {label:'Intrinsische Motivation / Eigenantrieb',weight:3},
+     {label:'Umgang mit Rückschlägen (Resilienz)',weight:3},
+     {label:'Klares Karriereziel & Ambitionen',weight:2},
+     {label:'Energie & Auftreten im Gespräch',weight:2}]},
+   {id:'salesexp',title:'Sales Experience & Track Record',weight:25,criteria:[
+     {label:'Ticket-Größe & Komplexität (B2B)',weight:3},
+     {label:'Strukturierter Sales-Prozess (Opener → Close)',weight:3},
+     {label:'Einwandbehandlung – reale Beispiele',weight:2},
+     {label:'Call-Volumen & Disziplin (Calls/Tag)',weight:2}]},
+   {id:'crm',title:'CRM & Pipeline Discipline',weight:20,criteria:[
+     {label:'CRM-Erfahrung (aktive Nutzung, korrekte Stages)',weight:3},
+     {label:'Dokumentationsqualität & Notizen-Hygiene',weight:2},
+     {label:'Follow-Up-Konsequenz (5–12 Kontakte)',weight:2},
+     {label:'Erkennung toter Deals / Pipeline-Pflege',weight:2}]},
+   {id:'closing',title:'Closing & Leadership',weight:20,criteria:[
+     {label:'Closing-Techniken bekannt & angewendet',weight:3},
+     {label:'Kunde aktiv führen (gegen ersten Impuls)',weight:3},
+     {label:'Entscheidungsträger identifizieren & einbinden',weight:2},
+     {label:'Upselling-Denke vorhanden',weight:2}]},
+   {id:'fit',title:'OTSG Fit & Soft Skills',weight:10,criteria:[
+     {label:'B2B-Fit / erklärungsbedürftige Produkte',weight:2},
+     {label:'Langer Entscheidungszyklus tolerierbar',weight:2},
+     {label:'Kommunikation: direkt, klar, selbstsicher',weight:2}]},
+   {id:'lang',title:'Language Skills',weight:5,criteria:[
+     {label:'Deutsch: akzentfrei / muttersprachlich',weight:3},
+     {label:'Englisch: kommunikationsfähig',weight:1},
+     {label:'Weitere Sprachen (PL, TR etc.) – Bonus',weight:1}]}
+  ],
+  ko:['Kein CRM-Wissen / nie genutzt','"Ich bin eher Beziehungsmensch, kein Closer"','Keine konkreten Zahlen zum eigenen Track Record','Kein Eigenantrieb / passiv im Gespräch','Misserfolge werden externalisiert (Ausreden)','Starker Akzent – Deutsch nicht kundentauglich']
+ },
+ p1:{
+  name:'Strategic Client Director – Werbetechnik KAM (P1 Insider)', short:'Werbetechnik KAM', scale:'kam',
+  sections:[
+   {id:'pm',   title:'Projektmanagement & Kommunikation',weight:10,criteria:[{label:'Stark: hält Kunde, Design, Produktion und Montage im Griff; klare Briefings, keine Überraschungen',weight:1}]},
+   {id:'sen',  title:'Sales Skills für Sr. Entscheider & High Tickets',weight:15,criteria:[{label:'Stark: wird von Head of Expansion / Store Development bis C-Level ernst genommen; Rahmenverträge, Multi-Site',weight:1}]},
+   {id:'hunt', title:'Hunter Mentality',weight:15,ko:true,criteria:[{label:'Stark: Netzwerk ist Einstieg, kein Ersatz fürs Verkaufen – hat selbst Logos geöffnet, nicht nur geerbt',weight:1}]},
+   {id:'book', title:'Kundenbuch',weight:25,ko:true,criteria:[{label:'Stark: nennt 3+ Accounts mit Kontakt, aktuellem Lieferanten und glaubhaftem Wechselgrund in 12 Monaten – ohne Wettbewerbsverbot',weight:1}]},
+   {id:'pres', title:'Überzeugendes & inspirierendes Auftreten',weight:10,criteria:[{label:'Stark: würden wir ihn/sie morgen vor einen Kunden setzen?',weight:1}]},
+   {id:'door', title:'Dooropening & Networking',weight:10,criteria:[{label:'Stark: Beziehungen zu Kunden-Entscheidern, nicht zu Monteuren; kann konkrete Türen benennen',weight:1}]},
+   {id:'comm', title:'Commercial Acumen',weight:15,criteria:[{label:'Stark: denkt in Marge, preist nach Wert, strukturiert Pilot → Rahmenvertrag, kein Reflex-Rabatt',weight:1}]}
+  ],
+  ko:['Deutsch unter Muttersprach-Niveau','Kein selbst akquirierter Deal nachweisbar','Gehaltswunsch klar über Range (OTE 95–125k)','Will Team führen statt selbst verkaufen','Kann keine mitnehmbaren Accounts nennen','Order-Taker: Beziehungen nur zu Monteuren/Installern']
+ },
+ p2:{
+  name:'Strategic Client Director – Hunter KAM (P2 Generalist)', short:'Hunter KAM', scale:'kam',
+  sections:[
+   {id:'sen',  title:'Sales Skills für Sr. Entscheider & High Tickets',weight:20,ko:true,criteria:[{label:'Stark: wird von Expansion / Procurement / C-Level ernst genommen; hat an Ops und Einkauf verkauft, nicht nur an Marketing',weight:1}]},
+   {id:'hunt', title:'Hunter Mentality',weight:25,ko:true,criteria:[{label:'Stark: Mehrheit des Umsatzes aus selbst eröffneten Accounts; systematische Account-Penetration (Research, Mapping, Multi-Channel)',weight:1}]},
+   {id:'net',  title:'Netzwerk & Track Record',weight:15,criteria:[{label:'Stark: größter Deal der letzten 2 Jahre mit Zahlen, Buying Center und eigenem Anteil sofort abrufbar',weight:1}]},
+   {id:'crm',  title:'CRM & Pipeline Discipline',weight:10,ko:true,criteria:[{label:'Stark: Pipeline ist sein/ihr Steuerungsinstrument – Next Steps, Forecast-Logik, Account-Pläne',weight:1}]},
+   {id:'pres', title:'Überzeugendes & inspirierendes Auftreten',weight:10,criteria:[{label:'Stark: würden wir ihn/sie morgen vor einen Kunden setzen?',weight:1}]},
+   {id:'emp',  title:'Empathie',weight:10,criteria:[{label:'Stark: hört raus, was dem anderen wichtig ist; Discovery vor Pitch; reframed Probleme statt Leistungen zu präsentieren',weight:1}]},
+   {id:'door', title:'Dooropening & Networking',weight:10,criteria:[{label:'Stark: hat selbst Türen geöffnet, wo niemand ihn/sie kannte; Multi-Threading statt Ein-Kontakt-Abhängigkeit',weight:1}]}
+  ],
+  ko:['Deutsch unter Muttersprach-Niveau','Kein selbst akquirierter Deal nachweisbar','Gehaltswunsch klar über Range (OTE 95–125k)','Will Team führen statt selbst verkaufen','Nur an Marketing verkauft – nie Expansion / Procurement / Ops','Nie selbst eine Tür geöffnet (nur geerbte Accounts / reiner Media-Seller)']
+ }
+};
 
-const scores={};
-let verdict=null;
-const koFlags={};
+let profile='sm';
+const state={};            // per profile: {scores, ko, verdict}
+function S(){return PROFILES[profile];}
+function st(){ if(!state[profile]) state[profile]={scores:{},ko:{},verdict:null}; return state[profile]; }
+
+function switchProfile(p){
+  profile=p;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.p===p));
+  document.getElementById('crole').value=S().name;
+  buildSections(); buildKO(); paintVerdict(); recalc();
+}
 
 function buildSections(){
   const container=document.getElementById('sections');
-  if(container.getAttribute('data-built')==='1'){return;} // guard: never double-render
-  container.innerHTML=''; // clear any pre-existing content
-  container.setAttribute('data-built','1');
-  SECTIONS.forEach(sec=>{
-    scores[sec.id]={};
-    sec.criteria.forEach((_,i)=>scores[sec.id][i]=0);
+  container.innerHTML='';
+  const sc=st().scores;
+  S().sections.forEach(sec=>{
+    if(!sc[sec.id]) sc[sec.id]={};
+    sec.criteria.forEach((_,i)=>{ if(sc[sec.id][i]===undefined) sc[sec.id][i]=0; });
     const div=document.createElement('div');
     div.className='section';
+    const kam=S().scale==='kam';
     div.innerHTML=`
       <div class="sec-head">
-        <span class="sec-title">${sec.title}</span>
-        <span class="sec-weight">Weight: ${sec.weight} pts</span>
+        <span class="sec-title">${sec.title}${sec.ko?'<span class="ko-skill">KO · min. 3</span>':''}</span>
+        <span class="sec-weight">Weight: ${sec.weight}${kam?' %':' pts'}</span>
         <span class="sec-score" id="ss-${sec.id}">0 / ${sec.weight}</span>
       </div>
       ${sec.criteria.map((c,i)=>`
         <div class="row">
-          <span class="crit">${c.label}</span>
-          <span class="w-badge">×${c.weight}</span>
+          <span class="crit">${kam?'<span class="hint">'+c.label+'</span>':c.label}</span>
+          <span class="w-badge">${kam?'':'×'+c.weight}</span>
           <div class="stars" id="stars-${sec.id}-${i}">
-            ${[1,2,3,4,5].map(v=>`<div class="star" data-sec="${sec.id}" data-idx="${i}" data-val="${v}" onclick="rate(this)">${v}</div>`).join('')}
+            ${[1,2,3,4,5].map(v=>`<div class="star ${v<=sc[sec.id][i]?'active-'+sc[sec.id][i]:''}" data-sec="${sec.id}" data-idx="${i}" data-val="${v}" onclick="rate(this)">${v}</div>`).join('')}
           </div>
-        </div>
-      `).join('')}
-    `;
+        </div>`).join('')}`;
     container.appendChild(div);
   });
 }
 
+function buildKO(){
+  const box=document.getElementById('ko-flags');
+  const ko=st().ko;
+  box.innerHTML=S().ko.map(l=>`<div class="koflag"><span class="ko-label">${l}</span><button class="ko-btn ${ko[l]?'ko-yes':''}" onclick="toggleKO(this)">${ko[l]?'⚠ K.O. set':'Kein K.O.'}</button></div>`).join('');
+}
+
 function rate(el){
   const sec=el.dataset.sec,idx=el.dataset.idx,val=parseInt(el.dataset.val);
-  scores[sec][idx]=val;
+  st().scores[sec][idx]=val;
   document.querySelectorAll(`#stars-${sec}-${idx} .star`).forEach(s=>{
     const v=parseInt(s.dataset.val);
     s.className='star'+(v<=val?` active-${val}`:'');
@@ -208,128 +254,113 @@ function rate(el){
 }
 
 function getScoreData(){
-  let grand=0;
-  const cats={};
-  SECTIONS.forEach(sec=>{
+  let grand=0; const cats={}; const sc=st().scores; let koFail=false, hasOne=false;
+  S().sections.forEach(sec=>{
     const maxRaw=sec.criteria.reduce((a,c)=>a+c.weight*5,0);
-    const raw=sec.criteria.reduce((a,c,i)=>a+c.weight*(scores[sec.id][i]||0),0);
+    const raw=sec.criteria.reduce((a,c,i)=>a+c.weight*((sc[sec.id]||{})[i]||0),0);
     const pts=maxRaw>0?Math.round((raw/maxRaw)*sec.weight):0;
     grand+=pts;
-    cats[sec.id]={pts,max:sec.weight,title:sec.title};
+    const stars=sec.criteria.length===1?((sc[sec.id]||{})[0]||0):null;
+    if(stars!==null){ if(sec.ko&&stars>0&&stars<3) koFail=true; if(stars===1) hasOne=true; }
+    cats[sec.id]={pts,max:sec.weight,title:sec.title,stars};
     const el=document.getElementById(`ss-${sec.id}`);
     if(el)el.textContent=`${pts} / ${sec.weight}`;
   });
-  return{grand,cats};
+  return{grand,cats,koFail,hasOne};
 }
 
 function recalc(){
-  const{grand}=getScoreData();
-  const hasKO=Object.values(koFlags).some(v=>v);
+  const{grand,koFail,hasOne}=getScoreData();
+  const hasKO=Object.values(st().ko).some(v=>v);
+  const prog=document.getElementById('prog'), label=document.getElementById('verdict-label');
   document.getElementById('total-score').textContent=hasKO?'K.O.':grand;
-  const prog=document.getElementById('prog');
-  const label=document.getElementById('verdict-label');
-  if(hasKO){prog.style.width='100%';prog.style.background='#E24B4A';label.style.color='#791F1F';label.textContent='Disqualified';}
-  else if(grand>=80){prog.style.width=grand+'%';prog.style.background='#639922';label.style.color='#27500A';label.textContent='Strong Hire';}
-  else if(grand>=65){prog.style.width=grand+'%';prog.style.background='#7F77DD';label.style.color='#3C3489';label.textContent='Round 2';}
-  else if(grand>=50){prog.style.width=grand+'%';prog.style.background='#BA7517';label.style.color='#633806';label.textContent='On Hold';}
-  else{prog.style.width=grand+'%';prog.style.background='#E24B4A';label.style.color='#791F1F';label.textContent='No Go';}
+  const set=(w,bg,fg,t)=>{prog.style.width=w+'%';prog.style.background=bg;label.style.color=fg;label.textContent=t;};
+  if(hasKO){ set(100,'#E24B4A','#791F1F','Disqualified'); return; }
+  if(S().scale==='kam'){
+    if(hasOne) set(grand,'#E24B4A','#791F1F','Stop: Skill mit 1');
+    else if(koFail) set(grand,'#BA7517','#633806','Pass-Bar verfehlt (KO-Skill < 3)');
+    else if(grand>=75) set(grand,'#639922','#27500A','Strong – Interview 3');
+    else if(grand>=60) set(grand,'#7F77DD','#3C3489','Pass-Bar erreicht (≥3.0)');
+    else set(grand,'#E24B4A','#791F1F','Unter Pass-Bar');
+  } else {
+    if(grand>=80) set(grand,'#639922','#27500A','Strong Hire');
+    else if(grand>=65) set(grand,'#7F77DD','#3C3489','Round 2');
+    else if(grand>=50) set(grand,'#BA7517','#633806','On Hold');
+    else set(grand,'#E24B4A','#791F1F','No Go');
+  }
 }
 
 function toggleKO(btn){
   const lbl=btn.previousElementSibling.textContent;
   const isKO=btn.classList.toggle('ko-yes');
-  btn.textContent=isKO?'⚠ K.O. set':'No K.O.';
-  koFlags[lbl]=isKO;
+  btn.textContent=isKO?'⚠ K.O. set':'Kein K.O.';
+  st().ko[lbl]=isKO;
   recalc();
 }
 
-function setVerdict(v){
-  verdict=v;
-  ['hire','r2','hold','no'].forEach(k=>{
-    document.getElementById('v-'+k).className='vbtn'+(k===v?` sel-${k}`:'');
-  });
+function paintVerdict(){
+  const v=st().verdict;
+  ['hire','r2','hold','no'].forEach(k=>{document.getElementById('v-'+k).className='vbtn'+(k===v?` sel-${k}`:'');});
 }
+function setVerdict(v){ st().verdict=v; paintVerdict(); }
 
 function buildScoringText(){
   const{grand,cats}=getScoreData();
-  const hasKO=Object.values(koFlags).some(v=>v);
-  const koList=Object.entries(koFlags).filter(([,v])=>v).map(([k])=>k).join(', ')||'None';
+  const ko=st().ko;
+  const hasKO=Object.values(ko).some(v=>v);
+  const koList=Object.entries(ko).filter(([,v])=>v).map(([k])=>k).join(', ')||'None';
   const vMap={hire:'Hire',r2:'Round 2',hold:'On Hold',no:'No Go'};
   const notes=document.getElementById('final-notes').value||'–';
   const fathom=(document.getElementById('cfathom')||{}).value||'';
-  const breakdown=SECTIONS.map(s=>`${cats[s.id].title}: ${cats[s.id].pts}/${cats[s.id].max}`).join('\n');
-  return `OTSG Candidate Scoring\nCandidate: ${document.getElementById('cname').value||'–'} | Date: ${document.getElementById('cdate').value||'–'} | Interviewer: ${document.getElementById('cint').value||'–'}\n\nSCORE: ${hasKO?'K.O. – Disqualified':grand+'/100'}\nRecommendation: ${vMap[verdict]||'–'}\n\nBreakdown:\n${breakdown}\n\nK.O. Flags: ${koList}\n\nNotes: ${notes}${fathom?'\n\n'+fathom:''}`;
+  const kam=S().scale==='kam';
+  const breakdown=S().sections.map(s=>`${cats[s.id].title}: ${cats[s.id].pts}/${cats[s.id].max}${kam&&cats[s.id].stars?` (${cats[s.id].stars}/5)`:''}${s.ko?' [KO]':''}`).join('\n');
+  return `OTSG Candidate Scoring\nProfile: ${S().name}\nCandidate: ${document.getElementById('cname').value||'–'} | Date: ${document.getElementById('cdate').value||'–'} | Interviewer: ${document.getElementById('cint').value||'–'}\n\nSCORE: ${hasKO?'K.O. – Disqualified':grand+'/100'}\nRecommendation: ${vMap[st().verdict]||'–'}\n\nBreakdown:\n${breakdown}\n\nK.O. Flags: ${koList}\n\nNotes: ${notes}${fathom?'\n\n'+fathom:''}`;
 }
 
 function openInClaude(){
-  const text='/fathom\n\n'+buildScoringText();
-  const url='https://claude.ai/new?q='+encodeURIComponent(text);
+  const url='https://claude.ai/new?q='+encodeURIComponent('/fathom\n\n'+buildScoringText());
   window.open(url,'_blank');
 }
 
 function exportSummary(){
   const text=buildScoringText();
   navigator.clipboard.writeText(text).then(()=>alert('Scoring copied!')).catch(()=>{
-    const ta=document.createElement('textarea');
-    ta.value=text;document.body.appendChild(ta);ta.select();
-    document.execCommand('copy');document.body.removeChild(ta);
-    alert('Scoring copied!');
+    const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');document.body.removeChild(ta);alert('Scoring copied!');
   });
 }
 
 function generateEnglishSummary(){
   const{grand,cats}=getScoreData();
-  const hasKO=Object.values(koFlags).some(v=>v);
+  const ko=st().ko; const hasKO=Object.values(ko).some(v=>v);
   const name=document.getElementById('cname').value||'The candidate';
   const notes=document.getElementById('final-notes').value||'';
   const vMap={hire:'Hire',r2:'Round 2',hold:'On Hold',no:'No Go'};
-  const vLabel=hasKO?'No Go — K.O. flag triggered':(vMap[verdict]||'pending');
-
-  function pct(c){return Math.round((c.pts/c.max)*100);}
-
-  const strengths=[];
-  const risks=[];
-  if(pct(cats.mindset)>=80) strengths.push('strong mindset and resilience');
-  else if(pct(cats.mindset)<50) risks.push('low motivation and drive');
-  if(pct(cats.salesexp)>=80) strengths.push('solid B2B sales track record');
-  else if(pct(cats.salesexp)<50) risks.push('limited or unproven sales experience');
-  if(pct(cats.crm)>=80) strengths.push('disciplined CRM usage');
-  else if(pct(cats.crm)<50) risks.push('weak CRM discipline');
-  if(pct(cats.closing)>=80) strengths.push('proven closing and leadership skills');
-  else if(pct(cats.closing)<50) risks.push('limited active closing experience');
-  if(pct(cats.lang)>=80) strengths.push('near-native German');
-  else if(pct(cats.lang)<50) risks.push('language barriers for DACH customer contact');
-
-  const koActive=Object.entries(koFlags).filter(([,v])=>v).map(([k])=>k);
-
-  let s=`${name} scored ${hasKO?'K.O.':grand+'/100'} in the OTSG candidate assessment`;
-  s+=` (Mindset ${cats.mindset.pts}/${cats.mindset.max} — Sales ${cats.salesexp.pts}/${cats.salesexp.max} — CRM ${cats.crm.pts}/${cats.crm.max} — Closing ${cats.closing.pts}/${cats.closing.max} — Fit ${cats.fit.pts}/${cats.fit.max} — Language ${cats.lang.pts}/${cats.lang.max}).`;
-  if(strengths.length) s+=` Key strengths: ${strengths.join(', ')}.`;
-  if(risks.length) s+=` Key risks: ${risks.join(', ')}.`;
-  if(koActive.length) s+=` K.O. flags triggered: ${koActive.join('; ')}.`;
-  if(notes.trim()) s+=` Interview notes: ${notes.trim().replace(/[\n\r]+/g,' | ')}.`;
+  const vLabel=hasKO?'No Go — K.O. flag triggered':(vMap[st().verdict]||'pending');
+  const pct=c=>Math.round((c.pts/c.max)*100);
+  const strengths=[],risks=[];
+  S().sections.forEach(s=>{const c=cats[s.id]; if(pct(c)>=80)strengths.push(s.title.toLowerCase()); else if(pct(c)<50)risks.push(s.title.toLowerCase());});
+  const koActive=Object.entries(ko).filter(([,v])=>v).map(([k])=>k);
+  let s=`${name} scored ${hasKO?'K.O.':grand+'/100'} for ${S().short}`;
+  s+=` (${S().sections.map(x=>`${x.title.split(' ')[0]} ${cats[x.id].pts}/${cats[x.id].max}`).join(' — ')}).`;
+  if(strengths.length) s+=` Strengths: ${strengths.join(', ')}.`;
+  if(risks.length) s+=` Risks: ${risks.join(', ')}.`;
+  if(koActive.length) s+=` K.O. flags: ${koActive.join('; ')}.`;
+  if(notes.trim()) s+=` Notes: ${notes.trim().replace(/[\n\r]+/g,' | ')}.`;
   s+=` Verdict: ${vLabel}.`;
-
   document.getElementById('sum-text').textContent=s;
   document.getElementById('summary-box').style.display='block';
   navigator.clipboard.writeText(s).catch(()=>{});
 }
 
 function downloadFile(){
-  const src=document.documentElement.outerHTML;
-  const blob=new Blob([src],{type:'text/html;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;
-  a.download='OTSG_Candidate_Scoring.html';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  const blob=new Blob([document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a');
+  a.href=url; a.download='OTSG_Candidate_Scoring.html'; document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
-buildSections();
-recalc();
+switchProfile('sm');
 </script>
 </body>
 </html>
