@@ -3,94 +3,111 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OTSG Candidate Scoring</title>
+<title>TSG Candidate Scoring</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f3;color:#1a1a1a;padding:1.5rem}
-.wrap{max-width:760px;margin:0 auto}
-.logo-bar{background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
-.logo-bar img{height:22px;width:auto;display:block}
-.logo-bar-label{font-size:11px;color:#888;font-weight:500;letter-spacing:0.04em}
-.header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;gap:1rem;flex-wrap:wrap}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",system-ui,sans-serif;background:#f5f5f3;color:#1a1a1a;padding:1.5rem 16px}
+.wrap{max-width:780px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.5rem}
+.top img{height:64px;width:auto;display:block}
+.top-right{display:flex;align-items:center;gap:10px}
+.flags{display:flex;gap:4px}
+.flag{font-size:22px;line-height:1;padding:4px 6px;border-radius:8px;border:1px solid transparent;background:none;cursor:pointer;opacity:.4}
+.flag.on{opacity:1;border-color:#ccc;background:#fff}
+.reset{font-size:12px;color:#666;background:none;border:0.5px solid #ccc;border-radius:8px;padding:6px 10px;cursor:pointer}
+.reset:hover{background:#fff}
+.header{display:flex;align-items:stretch;justify-content:space-between;margin-bottom:1.25rem;gap:1rem;flex-wrap:wrap}
 .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;min-width:260px}
-.meta input{width:100%;font-size:13px;padding:6px 10px;border:0.5px solid #ccc;border-radius:8px;background:#fff;color:#1a1a1a}
-.scorebox{background:#f0efe8;border-radius:12px;padding:1rem 1.25rem;text-align:center;min-width:120px}
-.scorebox .label{font-size:12px;color:#666;margin-bottom:4px}
-.scorebox .total{font-size:32px;font-weight:500;color:#1a1a1a}
-.scorebox .verdict{font-size:12px;font-weight:500;margin-top:4px}
-.section{margin-bottom:1.25rem;background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;overflow:hidden}
-.sec-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f5f5f3;border-bottom:0.5px solid rgba(0,0,0,0.1)}
-.sec-title{font-size:13px;font-weight:500;color:#1a1a1a}
-.sec-weight{font-size:11px;color:#888}
-.sec-score{font-size:13px;font-weight:500}
-.row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:8px 14px;border-bottom:0.5px solid rgba(0,0,0,0.08)}
+.meta .full{grid-column:1/-1}
+.meta label{display:block;font-size:10px;font-weight:600;color:#888;letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.meta input,.meta select{width:100%;font-size:13px;padding:7px 10px;border:0.5px solid #ccc;border-radius:8px;background:#fff;color:#1a1a1a;font-family:inherit}
+.meta select{font-size:15px;font-weight:600;padding:9px 10px;cursor:pointer}
+.scorebox{background:#fff;border:0.5px solid rgba(0,0,0,.12);border-radius:12px;padding:1rem 1.25rem;text-align:center;min-width:150px;display:flex;flex-direction:column;justify-content:center}
+.scorebox .label{font-size:11px;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.scorebox .total{font-size:36px;font-weight:600;color:#1a1a1a}
+.scorebox .of{font-size:11px;color:#888}
+.scorebox .verdict{font-size:12px;font-weight:600;margin-top:6px}
+.section{margin-bottom:1.25rem;background:#fff;border:0.5px solid rgba(0,0,0,.12);border-radius:12px;overflow:hidden}
+.sec-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;background:#f5f5f3;border-bottom:0.5px solid rgba(0,0,0,.1)}
+.sec-title{font-size:13px;font-weight:600;color:#1a1a1a;flex:1}
+.sec-weight{font-size:11px;color:#888;white-space:nowrap}
+.sec-score{font-size:13px;font-weight:600;white-space:nowrap;min-width:52px;text-align:right}
+.row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:8px 14px;border-bottom:0.5px solid rgba(0,0,0,.08)}
 .row:last-child{border-bottom:none}
 .crit{font-size:13px;color:#1a1a1a}
+.hint{font-size:12px;color:#666;line-height:1.4}
 .w-badge{font-size:11px;color:#888;white-space:nowrap}
 .stars{display:flex;gap:4px}
-.star{width:22px;height:22px;border-radius:4px;border:0.5px solid #ccc;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#aaa;background:#fff}
+.star{width:26px;height:26px;border-radius:6px;border:0.5px solid #ccc;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#aaa;background:#fff;user-select:none}
 .star.active-1,.star.active-2{background:#FAEEDA;color:#633806}
 .star.active-3{background:#EAF3DE;color:#27500A}
 .star.active-4{background:#E1F5EE;color:#085041}
 .star.active-5{background:#EEEDFE;color:#3C3489}
-.koflag{display:flex;align-items:center;gap:6px;padding:8px 14px;border-bottom:0.5px solid rgba(0,0,0,0.08)}
+.ko-skill{font-size:10px;font-weight:600;color:#791F1F;background:#FCEBEB;border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+.koflag{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:0.5px solid rgba(0,0,0,.08)}
 .koflag:last-child{border-bottom:none}
 .ko-label{font-size:13px;flex:1;color:#1a1a1a}
-.ko-btn{font-size:11px;font-weight:500;padding:4px 10px;border-radius:8px;border:0.5px solid #ccc;cursor:pointer;background:#fff;color:#888}
+.ko-btn{font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;border:0.5px solid #ccc;cursor:pointer;background:#fff;color:#888;white-space:nowrap}
 .ko-btn.ko-yes{background:#FCEBEB;color:#791F1F;border-color:#F09595}
-.notes-area{width:100%;padding:8px 14px;font-size:13px;border:none;border-top:0.5px solid rgba(0,0,0,0.08);background:#fff;color:#1a1a1a;resize:vertical;min-height:70px;font-family:system-ui,-apple-system,sans-serif;outline:none}
+.verdict-pad{padding:10px 14px}
 .verdict-bar{display:flex;gap:8px;flex-wrap:wrap}
-.vbtn{flex:1;min-width:80px;padding:10px;border-radius:8px;border:0.5px solid #ccc;cursor:pointer;font-size:13px;font-weight:500;background:#fff;color:#888;text-align:center}
+.vbtn{flex:1;min-width:90px;padding:10px;border-radius:8px;border:0.5px solid #ccc;cursor:pointer;font-size:13px;font-weight:600;background:#fff;color:#888;text-align:center}
 .vbtn.sel-hire{background:#EAF3DE;color:#27500A;border-color:#97C459}
 .vbtn.sel-r2{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
 .vbtn.sel-hold{background:#FAEEDA;color:#633806;border-color:#FAC775}
 .vbtn.sel-no{background:#FCEBEB;color:#791F1F;border-color:#F09595}
-.btn-row{display:flex;gap:8px;margin-top:1rem}
-.export-btn{flex:1;padding:10px;border:0.5px solid #ccc;border-radius:8px;background:#fff;color:#1a1a1a;font-size:13px;cursor:pointer;text-align:center}
+.notes-area{width:100%;padding:10px 14px;font-size:13px;border:none;background:#fff;color:#1a1a1a;resize:vertical;min-height:90px;font-family:inherit;outline:none;line-height:1.5}
+.export-body{padding:14px}
+.export-hint{font-size:12px;color:#666;line-height:1.45;margin-bottom:12px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.export-btn{flex:1;min-width:150px;padding:12px;border:0.5px solid #ccc;border-radius:10px;background:#fff;color:#1a1a1a;font-size:13px;font-weight:600;cursor:pointer;text-align:center;font-family:inherit}
+.export-btn.dark{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.export-btn.gpt{background:#10a37f;color:#fff;border-color:#10a37f}
+.preview{margin-top:12px;display:none}
+.preview textarea{width:100%;min-height:220px;font-family:ui-monospace,Menlo,monospace;font-size:11px;line-height:1.45;padding:10px;border:0.5px solid #ddd;border-radius:8px;background:#fafafa;color:#333;resize:vertical}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1a1a1a;color:#fff;font-size:13px;padding:10px 16px;border-radius:10px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
 .progress-bar{height:3px;background:#e0e0e0;margin-top:8px;border-radius:2px;overflow:hidden}
-.progress-fill{height:100%;border-radius:2px;transition:width 0.2s}
-.verdict-pad{padding:10px 14px}
-.summary-box{margin-top:1rem;padding:14px 16px;background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;font-size:13px;line-height:1.75;color:#1a1a1a;display:none}
-.summary-box .sum-label{font-size:11px;font-weight:500;color:#888;margin-bottom:8px;letter-spacing:0.04em}
-.summary-box .sum-text{color:#2c2c2a}
-.summary-box .sum-copy{margin-top:10px;font-size:11px;color:#639922;font-weight:500}
-
-.tabs{display:flex;gap:6px;margin-bottom:1.25rem}
-.tab{flex:1;padding:10px 12px;border:0.5px solid #ccc;border-radius:10px;background:#fff;color:#888;font-size:13px;font-weight:500;cursor:pointer;text-align:center}
-.tab small{display:block;font-size:10px;font-weight:400;color:#aaa;margin-top:2px}
-.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
-.tab.active small{color:#bbb}
-.hint{font-size:11px;color:#888;display:block;margin-top:2px;line-height:1.35}
-.ko-skill{font-size:10px;font-weight:500;color:#791F1F;background:#FCEBEB;border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:middle}
-.passbar{font-size:11px;color:#888;margin-top:6px}
+.progress-fill{height:100%;border-radius:2px;transition:width .2s}
+@media (max-width:600px){
+  .top img{height:44px}
+  .meta{grid-template-columns:1fr}
+  .scorebox{width:100%}
+  .row{grid-template-columns:1fr auto;}
+  .row .stars{grid-column:1/-1}
+  .row .w-badge{grid-row:1;grid-column:2}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-<div class="logo-bar">
+<div class="top">
   <img src="https://signage-group.com/wp-content/uploads/2025/08/cropped-THE-SIGNAGE-GROUP-Logo-black.png" alt="The Signage Group" />
-  <span class="logo-bar-label">Candidate Scoring Tool</span>
-</div>
-
-<div class="tabs" id="tabs">
-  <div class="tab active" data-p="sm" onclick="switchProfile('sm')">Sales Manager<small>Sygns / Canberry</small></div>
-  <div class="tab" data-p="p1" onclick="switchProfile('p1')">Werbetechnik KAM<small>Strategic Client Director · P1</small></div>
-  <div class="tab" data-p="p2" onclick="switchProfile('p2')">Hunter KAM<small>Strategic Client Director · P2</small></div>
+  <div class="top-right">
+    <button class="reset" id="btn-reset" onclick="resetAll()"></button>
+    <div class="flags">
+      <button class="flag" data-l="de" onclick="setLang('de')" title="Deutsch">🇩🇪</button>
+      <button class="flag" data-l="en" onclick="setLang('en')" title="English">🇬🇧</button>
+    </div>
+  </div>
 </div>
 
 <div class="header">
   <div class="meta">
-    <input id="cname" placeholder="Kandidat: Name" />
-    <input id="cdate" placeholder="Datum: TT.MM.JJJJ" />
-    <input id="crole" placeholder="Position" value="Sales Manager – OTSG" />
-    <input id="cint" placeholder="Interviewer" value="Can" />
-<input type="text" id="cfathom" placeholder="Fathom-Link (optional)" style="width:100%;margin-top:8px;padding:8px;border:0.5px solid #ccc;border-radius:6px;font-size:13px">
+    <div class="full"><label data-t="position"></label><select id="crole" onchange="switchProfile(this.value)"></select></div>
+    <div><label data-t="name"></label><input id="cname" data-ph="namePh" /></div>
+    <div><label data-t="date"></label><input id="cdate" type="date" /></div>
+    <div><label data-t="interviewer"></label><input id="cint" value="Can" /></div>
+    <div><label data-t="market"></label><input id="cmarket" data-ph="marketPh" /></div>
+    <div><label data-t="available"></label><input id="cavail" data-ph="availPh" /></div>
+    <div><label data-t="salary"></label><input id="csalary" data-ph="salaryPh" /></div>
+    <div class="full"><label data-t="fathom"></label><input id="cfathom" placeholder="https://fathom.video/…" /></div>
   </div>
   <div class="scorebox">
-    <div class="label">Gesamt-Score</div>
+    <div class="label" data-t="total"></div>
     <div class="total" id="total-score">0</div>
-    <div style="font-size:11px;color:#888">/ 100 Pkt.</div>
+    <div class="of" data-t="of"></div>
     <div class="verdict" id="verdict-label">–</div>
     <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%;background:#888"></div></div>
   </div>
@@ -99,12 +116,12 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f3;color:#1a
 <div id="sections"></div>
 
 <div class="section">
-  <div class="sec-head"><span class="sec-title">🚫 K.O.-Kriterien</span><span class="sec-weight">Automatischer Ausschluss</span></div>
+  <div class="sec-head"><span class="sec-title" data-t="koTitle"></span><span class="sec-weight" data-t="koSub"></span></div>
   <div id="ko-flags"></div>
 </div>
 
 <div class="section">
-  <div class="sec-head"><span class="sec-title">Finale Empfehlung</span></div>
+  <div class="sec-head"><span class="sec-title" data-t="final"></span></div>
   <div class="verdict-pad">
     <div class="verdict-bar">
       <div class="vbtn" id="v-hire" onclick="setVerdict('hire')">✓ Hire</div>
@@ -116,251 +133,441 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f3;color:#1a
 </div>
 
 <div class="section">
-  <div class="sec-head"><span class="sec-title">Notizen & Begründung</span></div>
-  <textarea class="notes-area" id="final-notes" placeholder="Key observations, nächste Schritte, offene Fragen..."></textarea>
+  <div class="sec-head"><span class="sec-title" data-t="notes"></span></div>
+  <textarea class="notes-area" id="final-notes" data-ph="notesPh"></textarea>
 </div>
 
-<div class="btn-row">
-  <button class="export-btn" onclick="exportSummary()">📋 Scoring kopieren</button>
-  <button class="export-btn" onclick="openInClaude()" style="background:#1a1a1a;color:#fff;border-color:#1a1a1a">✦ In Claude öffnen</button>
-  <button class="export-btn" onclick="generateEnglishSummary()">🇬🇧 Auswertung auf Englisch</button>
-  <button class="export-btn" onclick="downloadFile()" style="background:#f5f5f3;border-color:#bbb">⬇ Download</button>
+<div class="section">
+  <div class="sec-head"><span class="sec-title" data-t="exportTitle"></span><span class="sec-weight">Claude · ChatGPT · Grok</span></div>
+  <div class="export-body">
+    <div class="export-hint" data-t="exportHint"></div>
+    <div class="btn-row">
+      <button class="export-btn" onclick="copyAll()" data-t="copy"></button>
+      <button class="export-btn dark" onclick="openAI('claude')" data-t="claude"></button>
+      <button class="export-btn gpt" onclick="openAI('gpt')" data-t="gpt"></button>
+    </div>
+    <div class="preview" id="preview"><textarea id="preview-text" readonly></textarea></div>
+  </div>
 </div>
 
-<div class="summary-box" id="summary-box">
-  <div class="sum-label">CANDIDATE SUMMARY — ENGLISH (copied to clipboard)</div>
-  <div class="sum-text" id="sum-text"></div>
 </div>
+<div class="toast" id="toast"></div>
 
-</div>
 <script>
-const PROFILES={
- sm:{
-  name:'Sales Manager – OTSG', short:'Sales Manager', scale:'sm',
-  sections:[
-   {id:'mindset',title:'Mindset & Motivation',weight:20,criteria:[
-     {label:'Intrinsische Motivation / Eigenantrieb',weight:3},
-     {label:'Umgang mit Rückschlägen (Resilienz)',weight:3},
-     {label:'Klares Karriereziel & Ambitionen',weight:2},
-     {label:'Energie & Auftreten im Gespräch',weight:2}]},
-   {id:'salesexp',title:'Sales Experience & Track Record',weight:25,criteria:[
-     {label:'Ticket-Größe & Komplexität (B2B)',weight:3},
-     {label:'Strukturierter Sales-Prozess (Opener → Close)',weight:3},
-     {label:'Einwandbehandlung – reale Beispiele',weight:2},
-     {label:'Call-Volumen & Disziplin (Calls/Tag)',weight:2}]},
-   {id:'crm',title:'CRM & Pipeline Discipline',weight:20,criteria:[
-     {label:'CRM-Erfahrung (aktive Nutzung, korrekte Stages)',weight:3},
-     {label:'Dokumentationsqualität & Notizen-Hygiene',weight:2},
-     {label:'Follow-Up-Konsequenz (5–12 Kontakte)',weight:2},
-     {label:'Erkennung toter Deals / Pipeline-Pflege',weight:2}]},
-   {id:'closing',title:'Closing & Leadership',weight:20,criteria:[
-     {label:'Closing-Techniken bekannt & angewendet',weight:3},
-     {label:'Kunde aktiv führen (gegen ersten Impuls)',weight:3},
-     {label:'Entscheidungsträger identifizieren & einbinden',weight:2},
-     {label:'Upselling-Denke vorhanden',weight:2}]},
-   {id:'fit',title:'OTSG Fit & Soft Skills',weight:10,criteria:[
-     {label:'B2B-Fit / erklärungsbedürftige Produkte',weight:2},
-     {label:'Langer Entscheidungszyklus tolerierbar',weight:2},
-     {label:'Kommunikation: direkt, klar, selbstsicher',weight:2}]},
-   {id:'lang',title:'Language Skills',weight:5,criteria:[
-     {label:'Deutsch: akzentfrei / muttersprachlich',weight:3},
-     {label:'Englisch: kommunikationsfähig',weight:1},
-     {label:'Weitere Sprachen (PL, TR etc.) – Bonus',weight:1}]}
-  ],
-  ko:['Kein CRM-Wissen / nie genutzt','"Ich bin eher Beziehungsmensch, kein Closer"','Keine konkreten Zahlen zum eigenen Track Record','Kein Eigenantrieb / passiv im Gespräch','Misserfolge werden externalisiert (Ausreden)','Starker Akzent – Deutsch nicht kundentauglich']
- },
- p1:{
-  name:'Strategic Client Director – Werbetechnik KAM (P1 Insider)', short:'Werbetechnik KAM', scale:'kam',
-  sections:[
-   {id:'pm',   title:'Projektmanagement & Kommunikation',weight:10,criteria:[{label:'Stark: hält Kunde, Design, Produktion und Montage im Griff; klare Briefings, keine Überraschungen',weight:1}]},
-   {id:'sen',  title:'Sales Skills für Sr. Entscheider & High Tickets',weight:15,criteria:[{label:'Stark: wird von Head of Expansion / Store Development bis C-Level ernst genommen; Rahmenverträge, Multi-Site',weight:1}]},
-   {id:'hunt', title:'Hunter Mentality',weight:15,ko:true,criteria:[{label:'Stark: Netzwerk ist Einstieg, kein Ersatz fürs Verkaufen – hat selbst Logos geöffnet, nicht nur geerbt',weight:1}]},
-   {id:'book', title:'Kundenbuch',weight:25,ko:true,criteria:[{label:'Stark: nennt 3+ Accounts mit Kontakt, aktuellem Lieferanten und glaubhaftem Wechselgrund in 12 Monaten – ohne Wettbewerbsverbot',weight:1}]},
-   {id:'pres', title:'Überzeugendes & inspirierendes Auftreten',weight:10,criteria:[{label:'Stark: würden wir ihn/sie morgen vor einen Kunden setzen?',weight:1}]},
-   {id:'door', title:'Dooropening & Networking',weight:10,criteria:[{label:'Stark: Beziehungen zu Kunden-Entscheidern, nicht zu Monteuren; kann konkrete Türen benennen',weight:1}]},
-   {id:'comm', title:'Commercial Acumen',weight:15,criteria:[{label:'Stark: denkt in Marge, preist nach Wert, strukturiert Pilot → Rahmenvertrag, kein Reflex-Rabatt',weight:1}]}
-  ],
-  ko:['Deutsch unter Muttersprach-Niveau','Kein selbst akquirierter Deal nachweisbar','Gehaltswunsch klar über Range (OTE 95–125k)','Will Team führen statt selbst verkaufen','Kann keine mitnehmbaren Accounts nennen','Order-Taker: Beziehungen nur zu Monteuren/Installern']
- },
- p2:{
-  name:'Strategic Client Director – Hunter KAM (P2 Generalist)', short:'Hunter KAM', scale:'kam',
-  sections:[
-   {id:'sen',  title:'Sales Skills für Sr. Entscheider & High Tickets',weight:20,ko:true,criteria:[{label:'Stark: wird von Expansion / Procurement / C-Level ernst genommen; hat an Ops und Einkauf verkauft, nicht nur an Marketing',weight:1}]},
-   {id:'hunt', title:'Hunter Mentality',weight:25,ko:true,criteria:[{label:'Stark: Mehrheit des Umsatzes aus selbst eröffneten Accounts; systematische Account-Penetration (Research, Mapping, Multi-Channel)',weight:1}]},
-   {id:'net',  title:'Netzwerk & Track Record',weight:15,criteria:[{label:'Stark: größter Deal der letzten 2 Jahre mit Zahlen, Buying Center und eigenem Anteil sofort abrufbar',weight:1}]},
-   {id:'crm',  title:'CRM & Pipeline Discipline',weight:10,ko:true,criteria:[{label:'Stark: Pipeline ist sein/ihr Steuerungsinstrument – Next Steps, Forecast-Logik, Account-Pläne',weight:1}]},
-   {id:'pres', title:'Überzeugendes & inspirierendes Auftreten',weight:10,criteria:[{label:'Stark: würden wir ihn/sie morgen vor einen Kunden setzen?',weight:1}]},
-   {id:'emp',  title:'Empathie',weight:10,criteria:[{label:'Stark: hört raus, was dem anderen wichtig ist; Discovery vor Pitch; reframed Probleme statt Leistungen zu präsentieren',weight:1}]},
-   {id:'door', title:'Dooropening & Networking',weight:10,criteria:[{label:'Stark: hat selbst Türen geöffnet, wo niemand ihn/sie kannte; Multi-Threading statt Ein-Kontakt-Abhängigkeit',weight:1}]}
-  ],
-  ko:['Deutsch unter Muttersprach-Niveau','Kein selbst akquirierter Deal nachweisbar','Gehaltswunsch klar über Range (OTE 95–125k)','Will Team führen statt selbst verkaufen','Nur an Marketing verkauft – nie Expansion / Procurement / Ops','Nie selbst eine Tür geöffnet (nur geerbte Accounts / reiner Media-Seller)']
- }
+/* ───────── i18n ───────── */
+const T={
+ de:{position:'Position',name:'Kandidat',namePh:'Vor- und Nachname',date:'Datum',interviewer:'Interviewer',market:'Markt / Standort',marketPh:'z. B. DE · NL · Wrocław',available:'Verfügbar ab',availPh:'z. B. 01.11.2026',salary:'Gehaltsvorstellung',salaryPh:'z. B. 65k fix + 30k variabel',fathom:'Fathom-Link (optional)',
+  total:'Gesamt-Score',of:'/ 100 Pkt.',weight:'Gewichtung',koTitle:'🚫 K.O.-Kriterien',koSub:'Automatischer Ausschluss',koNo:'Kein K.O.',koYes:'⚠ K.O.',koSkill:'KO · min. 3',
+  final:'Finale Empfehlung',notes:'Notizen & Begründung',notesPh:'Kurz & knapp: Fakten, Zahlen, Beobachtungen, offene Punkte, nächste Schritte (wer / bis wann) …',
+  exportTitle:'Auswertung',exportHint:'„Scoring kopieren“ kopiert den Prompt und das Scoring. In Claude, ChatGPT oder Grok einfügen: Du bekommst eine A4-Auswertung im Apple Style. Die Buttons öffnen den Chat direkt mit Prompt, der Text liegt zusätzlich in der Zwischenablage.',
+  copy:'📋 Scoring kopieren',claude:'✦ In Claude öffnen',gpt:'In ChatGPT öffnen',copied:'Prompt + Scoring kopiert ✓',reset:'Neuer Kandidat',resetQ:'Alle Eingaben löschen und neuen Kandidaten starten?',
+  disq:'Disqualifiziert',stop:'Stop: Skill mit 1',passfail:'Pass-Bar verfehlt (KO-Skill < 3)',strong:'Strong Hire',r2:'Round 2',hold:'On Hold',no:'No Go',strongI3:'Strong – Interview 3',pass:'Pass-Bar erreicht',below:'Unter Pass-Bar'},
+ en:{position:'Position',name:'Candidate',namePh:'First and last name',date:'Date',interviewer:'Interviewer',market:'Market / location',marketPh:'e.g. DE · NL · Wrocław',available:'Available from',availPh:'e.g. 01.11.2026',salary:'Salary expectation',salaryPh:'e.g. 65k base + 30k variable',fathom:'Fathom link (optional)',
+  total:'Total score',of:'/ 100 pts',weight:'Weight',koTitle:'🚫 K.O. criteria',koSub:'Automatic exclusion',koNo:'No K.O.',koYes:'⚠ K.O.',koSkill:'KO · min. 3',
+  final:'Final recommendation',notes:'Notes & rationale',notesPh:'Short and to the point: facts, numbers, observations, open points, next steps (who / by when) …',
+  exportTitle:'Evaluation',exportHint:'“Copy scoring” copies the prompt and the scoring. Paste into Claude, ChatGPT or Grok to get a one-page A4 assessment in Apple style. The buttons open the chat with the prompt already in it, and the text is also on your clipboard.',
+  copy:'📋 Copy scoring',claude:'✦ Open in Claude',gpt:'Open in ChatGPT',copied:'Prompt + scoring copied ✓',reset:'New candidate',resetQ:'Clear all inputs and start a new candidate?',
+  disq:'Disqualified',stop:'Stop: skill rated 1',passfail:'Pass bar missed (KO skill < 3)',strong:'Strong Hire',r2:'Round 2',hold:'On Hold',no:'No Go',strongI3:'Strong – Interview 3',pass:'Pass bar reached',below:'Below pass bar'}
 };
 
-let profile='sm';
-const state={};            // per profile: {scores, ko, verdict}
-function S(){return PROFILES[profile];}
-function st(){ if(!state[profile]) state[profile]={scores:{},ko:{},verdict:null}; return state[profile]; }
+/* ───────── Profiles ─────────
+   c(de,en,w) = criterion · single-criterion sections render as hint ("Stark: …")
+   bands: std = 80/65/50 · kam = 75/60 + stop on any 1 */
+const c=(de,en,w=1)=>({de,en,w});
+const PROFILES={
+ sm:{name:{de:'Sales Manager',en:'Sales Manager'},full:{de:'Sales Manager – OTSG (Sygns / Canberry)',en:'Sales Manager – OTSG (Sygns / Canberry)'},bands:'std',
+  sections:[
+   {id:'mindset',t:{de:'Mindset & Motivation',en:'Mindset & motivation'},w:20,cr:[
+     c('Intrinsische Motivation / Eigenantrieb','Intrinsic motivation / self-drive',3),
+     c('Umgang mit Rückschlägen (Resilienz)','Handling setbacks (resilience)',3),
+     c('Klares Karriereziel & Ambitionen','Clear career goal & ambition',2),
+     c('Energie & Auftreten im Gespräch','Energy & presence in the interview',2)]},
+   {id:'salesexp',t:{de:'Sales Experience & Track Record',en:'Sales experience & track record'},w:25,cr:[
+     c('Ticket-Größe & Komplexität (B2B)','Ticket size & complexity (B2B)',3),
+     c('Strukturierter Sales-Prozess (Opener → Close)','Structured sales process (opener → close)',3),
+     c('Einwandbehandlung – reale Beispiele','Objection handling – real examples',2),
+     c('Call-Volumen & Disziplin (Calls/Tag)','Call volume & discipline (calls/day)',2)]},
+   {id:'crm',t:{de:'CRM & Pipeline Discipline',en:'CRM & pipeline discipline'},w:20,cr:[
+     c('CRM-Erfahrung (aktive Nutzung, korrekte Stages)','CRM experience (active use, correct stages)',3),
+     c('Dokumentationsqualität & Notizen-Hygiene','Documentation quality & note hygiene',2),
+     c('Follow-Up-Konsequenz (5–12 Kontakte)','Follow-up consistency (5–12 touches)',2),
+     c('Erkennung toter Deals / Pipeline-Pflege','Spotting dead deals / pipeline hygiene',2)]},
+   {id:'closing',t:{de:'Closing & Leadership',en:'Closing & leadership'},w:20,cr:[
+     c('Closing-Techniken bekannt & angewendet','Closing techniques known & applied',3),
+     c('Kunde aktiv führen (gegen ersten Impuls)','Actively leads the client (against first impulse)',3),
+     c('Entscheidungsträger identifizieren & einbinden','Identifies & involves decision makers',2),
+     c('Upselling-Denke vorhanden','Upselling mindset',2)]},
+   {id:'fit',t:{de:'OTSG Fit & Soft Skills',en:'OTSG fit & soft skills'},w:10,cr:[
+     c('B2B-Fit / erklärungsbedürftige Produkte','B2B fit / complex products',2),
+     c('Langer Entscheidungszyklus tolerierbar','Tolerates long decision cycles',2),
+     c('Kommunikation: direkt, klar, selbstsicher','Communication: direct, clear, confident',2)]},
+   {id:'lang',t:{de:'Sprachen',en:'Languages'},w:5,cr:[
+     c('Marktsprache: muttersprachlich / akzentfrei','Market language: native / accent-free',3),
+     c('Englisch: kommunikationsfähig','English: conversational',1),
+     c('Weitere Sprachen (PL, TR etc.) – Bonus','Other languages (PL, TR etc.) – bonus',1)]}
+  ],
+  ko:[c('Kein CRM-Wissen / nie genutzt','No CRM knowledge / never used'),
+      c('„Ich bin eher Beziehungsmensch, kein Closer“','“I’m more of a relationship person, not a closer”'),
+      c('Keine konkreten Zahlen zum eigenen Track Record','No concrete numbers on own track record'),
+      c('Kein Eigenantrieb / passiv im Gespräch','No self-drive / passive in the interview'),
+      c('Misserfolge werden externalisiert (Ausreden)','Blames failures on others (excuses)'),
+      c('Marktsprache nicht kundentauglich','Market language not client-ready')]
+ },
+ p1:{name:{de:'Werbetechnik KAM',en:'Sign-making KAM'},full:{de:'Strategic Client Director – Werbetechnik KAM (P1 Insider)',en:'Strategic Client Director – Sign-making KAM (P1 insider)'},bands:'kam',
+  sections:[
+   {id:'pm',t:{de:'Projektmanagement & Kommunikation',en:'Project management & communication'},w:10,cr:[c('Stark: hält Kunde, Design, Produktion und Montage im Griff; klare Briefings, keine Überraschungen','Strong: keeps client, design, production and installation in check; clear briefings, no surprises')]},
+   {id:'sen',t:{de:'Sales Skills für Sr. Entscheider & High Tickets',en:'Selling to senior decision makers & high tickets'},w:15,cr:[c('Stark: wird von Head of Expansion / Store Development bis C-Level ernst genommen; Rahmenverträge, Multi-Site','Strong: taken seriously from Head of Expansion / Store Development up to C-level; framework agreements, multi-site')]},
+   {id:'hunt',t:{de:'Hunter Mentality',en:'Hunter mentality'},w:15,ko:true,cr:[c('Stark: Netzwerk ist Einstieg, kein Ersatz fürs Verkaufen – hat selbst Logos geöffnet, nicht nur geerbt','Strong: network is the entry, not a substitute for selling – opened logos, not just inherited them')]},
+   {id:'book',t:{de:'Kundenbuch',en:'Client book'},w:25,ko:true,cr:[c('Stark: nennt 3+ Accounts mit Kontakt, aktuellem Lieferanten und glaubhaftem Wechselgrund in 12 Monaten – ohne Wettbewerbsverbot','Strong: names 3+ accounts with contact, current supplier and credible reason to switch within 12 months – no non-compete')]},
+   {id:'pres',t:{de:'Überzeugendes & inspirierendes Auftreten',en:'Convincing & inspiring presence'},w:10,cr:[c('Stark: würden wir ihn/sie morgen vor einen Kunden setzen?','Strong: would we put them in front of a client tomorrow?')]},
+   {id:'door',t:{de:'Dooropening & Networking',en:'Door opening & networking'},w:10,cr:[c('Stark: Beziehungen zu Kunden-Entscheidern, nicht zu Monteuren; kann konkrete Türen benennen','Strong: relationships with client decision makers, not installers; can name concrete doors')]},
+   {id:'comm',t:{de:'Commercial Acumen',en:'Commercial acumen'},w:15,cr:[c('Stark: denkt in Marge, preist nach Wert, strukturiert Pilot → Rahmenvertrag, kein Reflex-Rabatt','Strong: thinks in margin, prices on value, structures pilot → framework agreement, no reflex discount')]}
+  ],
+  ko:[c('Deutsch unter Muttersprach-Niveau','German below native level'),
+      c('Kein selbst akquirierter Deal nachweisbar','No self-acquired deal provable'),
+      c('Gehaltswunsch klar über Range (OTE 95–125k)','Salary clearly above range (OTE 95–125k)'),
+      c('Will Team führen statt selbst verkaufen','Wants to lead a team rather than sell'),
+      c('Kann keine mitnehmbaren Accounts nennen','Cannot name portable accounts'),
+      c('Order-Taker: Beziehungen nur zu Monteuren/Installern','Order-taker: relationships only with installers')]
+ },
+ p2:{name:{de:'Hunter KAM',en:'Hunter KAM'},full:{de:'Strategic Client Director – Hunter KAM (P2 Generalist)',en:'Strategic Client Director – Hunter KAM (P2 generalist)'},bands:'kam',
+  sections:[
+   {id:'sen',t:{de:'Sales Skills für Sr. Entscheider & High Tickets',en:'Selling to senior decision makers & high tickets'},w:20,ko:true,cr:[c('Stark: wird von Expansion / Procurement / C-Level ernst genommen; hat an Ops und Einkauf verkauft, nicht nur an Marketing','Strong: taken seriously by Expansion / Procurement / C-level; has sold to Ops and purchasing, not just marketing')]},
+   {id:'hunt',t:{de:'Hunter Mentality',en:'Hunter mentality'},w:25,ko:true,cr:[c('Stark: Mehrheit des Umsatzes aus selbst eröffneten Accounts; systematische Account-Penetration (Research, Mapping, Multi-Channel)','Strong: most revenue from self-opened accounts; systematic account penetration (research, mapping, multi-channel)')]},
+   {id:'net',t:{de:'Netzwerk & Track Record',en:'Network & track record'},w:15,cr:[c('Stark: größter Deal der letzten 2 Jahre mit Zahlen, Buying Center und eigenem Anteil sofort abrufbar','Strong: biggest deal of the last 2 years with numbers, buying center and own share at hand')]},
+   {id:'crm',t:{de:'CRM & Pipeline Discipline',en:'CRM & pipeline discipline'},w:10,ko:true,cr:[c('Stark: Pipeline ist sein/ihr Steuerungsinstrument – Next Steps, Forecast-Logik, Account-Pläne','Strong: pipeline is their steering tool – next steps, forecast logic, account plans')]},
+   {id:'pres',t:{de:'Überzeugendes & inspirierendes Auftreten',en:'Convincing & inspiring presence'},w:10,cr:[c('Stark: würden wir ihn/sie morgen vor einen Kunden setzen?','Strong: would we put them in front of a client tomorrow?')]},
+   {id:'emp',t:{de:'Empathie',en:'Empathy'},w:10,cr:[c('Stark: hört raus, was dem anderen wichtig ist; Discovery vor Pitch; reframed Probleme statt Leistungen zu präsentieren','Strong: hears what matters to the other side; discovery before pitch; reframes problems instead of listing services')]},
+   {id:'door',t:{de:'Dooropening & Networking',en:'Door opening & networking'},w:10,cr:[c('Stark: hat selbst Türen geöffnet, wo niemand ihn/sie kannte; Multi-Threading statt Ein-Kontakt-Abhängigkeit','Strong: opened doors where nobody knew them; multi-threading instead of single-contact dependency')]}
+  ],
+  ko:[c('Deutsch unter Muttersprach-Niveau','German below native level'),
+      c('Kein selbst akquirierter Deal nachweisbar','No self-acquired deal provable'),
+      c('Gehaltswunsch klar über Range (OTE 95–125k)','Salary clearly above range (OTE 95–125k)'),
+      c('Will Team führen statt selbst verkaufen','Wants to lead a team rather than sell'),
+      c('Nur an Marketing verkauft – nie Expansion / Procurement / Ops','Only sold to marketing – never Expansion / Procurement / Ops'),
+      c('Nie selbst eine Tür geöffnet (nur geerbte Accounts / reiner Media-Seller)','Never opened a door (only inherited accounts / pure media seller)')]
+ },
+ smgmt:{name:{de:'Sales Management',en:'Sales Management'},full:{de:'Sales Management – Head of Sales / Teamlead',en:'Sales Management – Head of Sales / team lead'},bands:'std',
+  sections:[
+   {id:'lead',t:{de:'Führung & Coaching',en:'Leadership & coaching'},w:25,ko:true,cr:[
+     c('Entwickelt Reps aktiv (Call-Coaching, 1:1s, Mithören)','Actively develops reps (call coaching, 1:1s, call shadowing)',3),
+     c('Klare Erwartungen, konsequent bei Low Performern','Clear expectations, consistent with low performers',3),
+     c('Verkauft selbst mit, wenn nötig (Vorbild)','Sells alongside the team when needed (role model)',2)]},
+   {id:'pipe',t:{de:'Pipeline, KPIs & Forecast',en:'Pipeline, KPIs & forecast'},w:20,cr:[
+     c('Steuert über KPIs (Calls, Conversion, Ø Ticket)','Steers by KPIs (calls, conversion, avg. ticket)',3),
+     c('Forecast-Genauigkeit – mit Beispiel belegt','Forecast accuracy – proven with an example',2),
+     c('CRM als Führungsinstrument (Pipeline-Reviews)','CRM as a management tool (pipeline reviews)',2)]},
+   {id:'track',t:{de:'Track Record Team-Performance',en:'Team performance track record'},w:20,cr:[
+     c('Team-Zielerreichung mit Zahlen belegt','Team target attainment proven with numbers',3),
+     c('Größe & Komplexität geführter Teams','Size & complexity of teams led',2)]},
+   {id:'hire',t:{de:'Recruiting & Onboarding',en:'Recruiting & onboarding'},w:15,cr:[
+     c('Hat selbst Reps eingestellt – Trefferquote','Hired reps personally – hit rate',2),
+     c('Strukturiertes Onboarding / Ramp-up','Structured onboarding / ramp-up',2)]},
+   {id:'proc',t:{de:'Prozess & Playbooks',en:'Process & playbooks'},w:10,cr:[
+     c('Hat Playbooks, Skripte, Sales-Stages aufgebaut','Built playbooks, scripts, sales stages',2),
+     c('Denkt in skalierbaren Systemen, nicht in Einzelfällen','Thinks in scalable systems, not one-offs',1)]},
+   {id:'fit',t:{de:'OTSG Fit & Sprache',en:'OTSG fit & language'},w:10,cr:[
+     c('Hands-on im Scale-up, hohes Tempo','Hands-on in a scale-up, high pace',2),
+     c('Deutsch verhandlungssicher','German business-fluent',1),
+     c('Englisch sicher (internationale Teams)','Confident English (international teams)',1)]}
+  ],
+  ko:[c('Keine Team-Zahlen belegbar','No provable team numbers'),
+      c('Nie selbst Reps eingestellt oder getrennt','Never hired or let go of reps personally'),
+      c('Will verwalten, nicht coachen oder mitverkaufen','Wants to administer, not coach or sell'),
+      c('Kein KPI-/CRM-Verständnis','No KPI / CRM understanding'),
+      c('Schiebt Team-Misserfolge auf andere','Blames team failures on others'),
+      c('Deutsch nicht verhandlungssicher','German not business-fluent')]
+ },
+ ops:{name:{de:'Operations Management',en:'Operations Management'},full:{de:'Operations Management – Projekte, Produktion & Montage',en:'Operations Management – projects, production & installation'},bands:'std',
+  sections:[
+   {id:'proc',t:{de:'Prozess & Organisation',en:'Process & organisation'},w:25,ko:true,cr:[
+     c('Strukturiert Abläufe: Auftrag → Produktion → Montage','Structures flows: order → production → installation',3),
+     c('Baut Standards / SOPs und misst per KPI','Builds standards / SOPs and measures with KPIs',2)]},
+   {id:'roll',t:{de:'Projekt- & Rollout-Steuerung',en:'Project & roll-out management'},w:20,cr:[
+     c('Multi-Site-Rollouts termintreu geliefert','Delivered multi-site roll-outs on time',3),
+     c('Priorisiert sauber unter Druck','Prioritises clearly under pressure',2)]},
+   {id:'supp',t:{de:'Lieferanten & Dienstleister',en:'Suppliers & subcontractors'},w:15,cr:[
+     c('Steuert Einkauf, Subunternehmer, Monteure','Manages purchasing, subcontractors, installers',2),
+     c('Qualitätskontrolle & Reklamationsmanagement','Quality control & complaint handling',2)]},
+   {id:'num',t:{de:'Kosten & Zahlen',en:'Costs & numbers'},w:15,cr:[
+     c('Kalkulation, Marge, Budget im Griff – mit Beispiel','Costing, margin, budget under control – with example',3)]},
+   {id:'lead',t:{de:'Führung',en:'Leadership'},w:15,cr:[
+     c('Führt Produktion/Montage mit klaren Ansagen','Leads production/installation with clear direction',2),
+     c('Löst Konflikte zwischen Sales, Design, Produktion','Resolves conflicts between sales, design, production',1)]},
+   {id:'fit',t:{de:'Tools & Branchen-Fit',en:'Tools & industry fit'},w:10,cr:[
+     c('ERP / Projekttools, digital-affin','ERP / project tools, digitally savvy',2),
+     c('Werbetechnik / Signage / Ladenbau-Erfahrung','Sign-making / signage / shopfitting experience',2)]}
+  ],
+  ko:[c('Nie Verantwortung für Termine oder Budget getragen','Never owned deadlines or budget'),
+      c('Kein Zahlenverständnis (Marge, Kalkulation)','No grasp of numbers (margin, costing)'),
+      c('Delegiert Probleme statt sie zu lösen','Hands problems off instead of solving them'),
+      c('Kein Standing gegenüber Produktion / Monteuren','No standing with production / installers'),
+      c('Deutsch nicht kommunikationssicher','German not fluent enough')]
+ },
+ design:{name:{de:'Design Team',en:'Design Team'},full:{de:'Design Team – Grafik, Signage-Design & Druckvorstufe',en:'Design Team – graphics, signage design & prepress'},bands:'std',
+  sections:[
+   {id:'port',t:{de:'Portfolio & Gestaltung',en:'Portfolio & design quality'},w:25,cr:[
+     c('Portfolio-Qualität: Typografie, Layout, Wirkung','Portfolio quality: typography, layout, impact',3),
+     c('CI-Treue über Formate und Standorte','Brand consistency across formats and sites',2)]},
+   {id:'tech',t:{de:'Technische Umsetzung',en:'Technical execution'},w:25,ko:true,cr:[
+     c('Druckdaten korrekt: Farbräume, Beschnitt, Vektor','Correct print files: colour spaces, bleed, vector',3),
+     c('Maßpläne & Material-Know-how (Folie, Acryl, LED)','Dimension drawings & material know-how (vinyl, acrylic, LED)',3)]},
+   {id:'tools',t:{de:'Tools',en:'Tools'},w:15,cr:[
+     c('Adobe CC sicher (Illustrator, InDesign, Photoshop)','Adobe CC fluent (Illustrator, InDesign, Photoshop)',3),
+     c('CAD / 3D / Visualisierung – Bonus','CAD / 3D / visualisation – bonus',1)]},
+   {id:'speed',t:{de:'Tempo & Sorgfalt',en:'Speed & accuracy'},w:15,cr:[
+     c('Hohe Stückzahl bei niedriger Fehlerquote','High volume with low error rate',2),
+     c('Hält Termine zuverlässig','Reliably meets deadlines',2)]},
+   {id:'comm',t:{de:'Kommunikation & Feedback',en:'Communication & feedback'},w:10,cr:[
+     c('Setzt Kunden-/Sales-Feedback schnell um','Implements client / sales feedback quickly',2),
+     c('Fragt nach, statt zu raten (Briefing-Qualität)','Asks instead of guessing (briefing quality)',1)]},
+   {id:'fit',t:{de:'Team-Fit & Sprache',en:'Team fit & language'},w:10,cr:[
+     c('Eigeninitiative, bringt Vorschläge ein','Initiative, brings own ideas',2),
+     c('Deutsch / Englisch arbeitsfähig','German / English at working level',1)]}
+  ],
+  ko:[c('Kein belastbares Portfolio','No solid portfolio'),
+      c('Keine Druckdaten-Erfahrung','No print-file experience'),
+      c('Nicht kritikfähig','Cannot take criticism'),
+      c('Hält Termine nicht / sagt nichts zu','Misses deadlines / won’t commit')]
+ },
+ wh:{name:{de:'Warehouse',en:'Warehouse'},full:{de:'Warehouse – Lager, Logistik & Vormontage',en:'Warehouse – storage, logistics & pre-assembly'},bands:'std',
+  sections:[
+   {id:'rel',t:{de:'Zuverlässigkeit & Arbeitsmoral',en:'Reliability & work ethic'},w:25,ko:true,cr:[
+     c('Pünktlich, anwesend, Referenzen bestätigen es','Punctual, present, references confirm it',3),
+     c('Belastbar, auch körperlich','Resilient, physically as well',2)]},
+   {id:'care',t:{de:'Sorgfalt & Qualität',en:'Accuracy & quality'},w:20,cr:[
+     c('Kommissioniert & prüft genau, vermeidet Schäden','Picks & checks accurately, avoids damage',3),
+     c('Hält Ordnung (5S, fester Platz für alles)','Keeps order (5S, a place for everything)',2)]},
+   {id:'log',t:{de:'Logistik-Know-how',en:'Logistics know-how'},w:20,cr:[
+     c('Wareneingang/-ausgang, Inventur, Versandpapiere','Goods in/out, stocktaking, shipping documents',2),
+     c('Verpackt sperrige/empfindliche Teile (Glas, LED, Displays)','Packs bulky/fragile parts (glass, LED, displays)',2)]},
+   {id:'tech',t:{de:'Technik & Geräte',en:'Equipment & handcraft'},w:15,cr:[
+     c('Staplerschein / Flurförderzeuge','Forklift licence / material handling',2),
+     c('Handwerkliches Geschick / Vormontage','Manual skills / pre-assembly',2)]},
+   {id:'sys',t:{de:'Systeme',en:'Systems'},w:10,cr:[
+     c('Scanner, Lagerverwaltung, ERP','Scanners, WMS, ERP',2)]},
+   {id:'team',t:{de:'Team & Kommunikation',en:'Team & communication'},w:10,cr:[
+     c('Teamfähig, setzt Anweisungen sauber um','Team player, follows instructions accurately',2),
+     c('Sprache ausreichend (DE / EN / PL)','Sufficient language (DE / EN / PL)',1)]}
+  ],
+  ko:[c('Unzuverlässig: Lücken / Abbrüche ohne Erklärung','Unreliable: gaps / dropouts without explanation'),
+      c('Kein Sicherheitsbewusstsein','No safety awareness'),
+      c('Körperlich nicht belastbar für die Rolle','Not physically fit for the role'),
+      c('Keine Arbeitserlaubnis','No work permit')]
+ }
+};
+const ORDER=['sm','p1','p2','smgmt','ops','design','wh'];
 
-function switchProfile(p){
-  profile=p;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.p===p));
-  document.getElementById('crole').value=S().name;
-  buildSections(); buildKO(); paintVerdict(); recalc();
+/* ───────── State (autosave, per browser) ───────── */
+const KEY='tsg-scoring-v2';
+let lang='de', profile='sm', state={};
+const META=['cname','cdate','cint','cmarket','cavail','csalary','cfathom','final-notes'];
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null'); if(d){lang=d.lang||lang;profile=d.profile||profile;state=d.state||{};
+  META.forEach(id=>{if(d.meta&&d.meta[id]!==undefined)document.getElementById(id).value=d.meta[id];});}}catch(e){}}
+function save(){try{const meta={};META.forEach(id=>meta[id]=document.getElementById(id).value);
+  localStorage.setItem(KEY,JSON.stringify({lang,profile,state,meta}));}catch(e){}}
+META.forEach(id=>document.getElementById(id).addEventListener('input',save));
+
+const P=()=>PROFILES[profile];
+const st=()=>state[profile]||(state[profile]={scores:{},ko:{},verdict:null});
+const L=o=>o[lang];
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+/* ───────── Render ───────── */
+function setLang(l){
+  lang=l; document.documentElement.lang=l;
+  document.querySelectorAll('.flag').forEach(f=>f.classList.toggle('on',f.dataset.l===l));
+  document.querySelectorAll('[data-t]').forEach(e=>e.textContent=T[l][e.dataset.t]);
+  document.querySelectorAll('[data-ph]').forEach(e=>e.placeholder=T[l][e.dataset.ph]);
+  document.getElementById('btn-reset').textContent=T[l].reset;
+  buildSelect(); render(); save();
 }
+function buildSelect(){
+  document.getElementById('crole').innerHTML=ORDER.map(k=>`<option value="${k}"${k===profile?' selected':''}>${esc(L(PROFILES[k].name))}</option>`).join('');
+}
+function switchProfile(p){profile=p; render(); save();}
+function render(){buildSections(); buildKO(); paintVerdict(); recalc(); hidePreview();}
 
 function buildSections(){
-  const container=document.getElementById('sections');
-  container.innerHTML='';
-  const sc=st().scores;
-  S().sections.forEach(sec=>{
-    if(!sc[sec.id]) sc[sec.id]={};
-    sec.criteria.forEach((_,i)=>{ if(sc[sec.id][i]===undefined) sc[sec.id][i]=0; });
-    const div=document.createElement('div');
-    div.className='section';
-    const kam=S().scale==='kam';
-    div.innerHTML=`
+  const box=document.getElementById('sections'); const sc=st().scores;
+  box.innerHTML=P().sections.map(sec=>{
+    sc[sec.id]=sc[sec.id]||{};
+    const single=sec.cr.length===1;
+    return `<div class="section">
       <div class="sec-head">
-        <span class="sec-title">${sec.title}${sec.ko?'<span class="ko-skill">KO · min. 3</span>':''}</span>
-        <span class="sec-weight">Weight: ${sec.weight}${kam?' %':' pts'}</span>
-        <span class="sec-score" id="ss-${sec.id}">0 / ${sec.weight}</span>
+        <span class="sec-title">${esc(L(sec.t))}${sec.ko?`<span class="ko-skill">${T[lang].koSkill}</span>`:''}</span>
+        <span class="sec-weight">${T[lang].weight}: ${sec.w}</span>
+        <span class="sec-score" id="ss-${sec.id}">0 / ${sec.w}</span>
       </div>
-      ${sec.criteria.map((c,i)=>`
+      ${sec.cr.map((cr,i)=>{const v=sc[sec.id][i]||0; return `
         <div class="row">
-          <span class="crit">${kam?'<span class="hint">'+c.label+'</span>':c.label}</span>
-          <span class="w-badge">${kam?'':'×'+c.weight}</span>
+          <span class="${single?'hint':'crit'}">${esc(L(cr))}</span>
+          <span class="w-badge">${single?'':'×'+cr.w}</span>
           <div class="stars" id="stars-${sec.id}-${i}">
-            ${[1,2,3,4,5].map(v=>`<div class="star ${v<=sc[sec.id][i]?'active-'+sc[sec.id][i]:''}" data-sec="${sec.id}" data-idx="${i}" data-val="${v}" onclick="rate(this)">${v}</div>`).join('')}
+            ${[1,2,3,4,5].map(n=>`<div class="star ${n<=v?'active-'+v:''}" onclick="rate('${sec.id}',${i},${n})">${n}</div>`).join('')}
           </div>
-        </div>`).join('')}`;
-    container.appendChild(div);
-  });
+        </div>`;}).join('')}
+    </div>`;}).join('');
 }
-
 function buildKO(){
-  const box=document.getElementById('ko-flags');
   const ko=st().ko;
-  box.innerHTML=S().ko.map(l=>`<div class="koflag"><span class="ko-label">${l}</span><button class="ko-btn ${ko[l]?'ko-yes':''}" onclick="toggleKO(this)">${ko[l]?'⚠ K.O. set':'Kein K.O.'}</button></div>`).join('');
+  document.getElementById('ko-flags').innerHTML=P().ko.map((k,i)=>`<div class="koflag"><span class="ko-label">${esc(L(k))}</span><button class="ko-btn ${ko[i]?'ko-yes':''}" onclick="toggleKO(${i})">${ko[i]?T[lang].koYes:T[lang].koNo}</button></div>`).join('');
 }
+function rate(sec,i,n){
+  const cur=st().scores[sec][i]; st().scores[sec][i]=(cur===n?0:n); // click again = reset
+  const v=st().scores[sec][i];
+  document.querySelectorAll(`#stars-${sec}-${i} .star`).forEach((s,k)=>s.className='star'+(k+1<=v?` active-${v}`:''));
+  recalc(); save();
+}
+function toggleKO(i){st().ko[i]=!st().ko[i]; buildKO(); recalc(); save();}
+function setVerdict(v){st().verdict=st().verdict===v?null:v; paintVerdict(); save();}
+function paintVerdict(){const v=st().verdict;['hire','r2','hold','no'].forEach(k=>document.getElementById('v-'+k).className='vbtn'+(k===v?` sel-${k}`:''));}
 
-function rate(el){
-  const sec=el.dataset.sec,idx=el.dataset.idx,val=parseInt(el.dataset.val);
-  st().scores[sec][idx]=val;
-  document.querySelectorAll(`#stars-${sec}-${idx} .star`).forEach(s=>{
-    const v=parseInt(s.dataset.val);
-    s.className='star'+(v<=val?` active-${val}`:'');
+/* ───────── Scoring ───────── */
+function score(){
+  let grand=0,koFail=false,hasOne=false; const cats=[]; const sc=st().scores;
+  P().sections.forEach(sec=>{
+    const s=sc[sec.id]||{};
+    const max=sec.cr.reduce((a,c)=>a+c.w*5,0);
+    const raw=sec.cr.reduce((a,c,i)=>a+c.w*(s[i]||0),0);
+    const pts=Math.round(raw/max*sec.w); grand+=pts;
+    const ratedW=sec.cr.reduce((a,c,i)=>a+(s[i]?c.w:0),0);
+    const avg=ratedW?raw/ratedW:0;
+    if(sec.ko&&ratedW&&avg<3) koFail=true;
+    if(sec.cr.some((c,i)=>s[i]===1)) hasOne=true;
+    cats.push({sec,pts,avg,stars:sec.cr.map((c,i)=>s[i]||0)});
+    const el=document.getElementById('ss-'+sec.id); if(el) el.textContent=`${pts} / ${sec.w}`;
   });
-  recalc();
+  const koList=P().ko.filter((k,i)=>st().ko[i]).map(L);
+  return {grand,cats,koFail,hasOne,koList};
 }
-
-function getScoreData(){
-  let grand=0; const cats={}; const sc=st().scores; let koFail=false, hasOne=false;
-  S().sections.forEach(sec=>{
-    const maxRaw=sec.criteria.reduce((a,c)=>a+c.weight*5,0);
-    const raw=sec.criteria.reduce((a,c,i)=>a+c.weight*((sc[sec.id]||{})[i]||0),0);
-    const pts=maxRaw>0?Math.round((raw/maxRaw)*sec.weight):0;
-    grand+=pts;
-    const stars=sec.criteria.length===1?((sc[sec.id]||{})[0]||0):null;
-    if(stars!==null){ if(sec.ko&&stars>0&&stars<3) koFail=true; if(stars===1) hasOne=true; }
-    cats[sec.id]={pts,max:sec.weight,title:sec.title,stars};
-    const el=document.getElementById(`ss-${sec.id}`);
-    if(el)el.textContent=`${pts} / ${sec.weight}`;
-  });
-  return{grand,cats,koFail,hasOne};
-}
-
-function recalc(){
-  const{grand,koFail,hasOne}=getScoreData();
-  const hasKO=Object.values(st().ko).some(v=>v);
-  const prog=document.getElementById('prog'), label=document.getElementById('verdict-label');
-  document.getElementById('total-score').textContent=hasKO?'K.O.':grand;
-  const set=(w,bg,fg,t)=>{prog.style.width=w+'%';prog.style.background=bg;label.style.color=fg;label.textContent=t;};
-  if(hasKO){ set(100,'#E24B4A','#791F1F','Disqualified'); return; }
-  if(S().scale==='kam'){
-    if(hasOne) set(grand,'#E24B4A','#791F1F','Stop: Skill mit 1');
-    else if(koFail) set(grand,'#BA7517','#633806','Pass-Bar verfehlt (KO-Skill < 3)');
-    else if(grand>=75) set(grand,'#639922','#27500A','Strong – Interview 3');
-    else if(grand>=60) set(grand,'#7F77DD','#3C3489','Pass-Bar erreicht (≥3.0)');
-    else set(grand,'#E24B4A','#791F1F','Unter Pass-Bar');
-  } else {
-    if(grand>=80) set(grand,'#639922','#27500A','Strong Hire');
-    else if(grand>=65) set(grand,'#7F77DD','#3C3489','Round 2');
-    else if(grand>=50) set(grand,'#BA7517','#633806','On Hold');
-    else set(grand,'#E24B4A','#791F1F','No Go');
+function band(r){
+  const t=T[lang];
+  if(r.koList.length) return [100,'#E24B4A','#791F1F',t.disq];
+  if(P().bands==='kam'){
+    if(r.hasOne) return [r.grand,'#E24B4A','#791F1F',t.stop];
+    if(r.koFail) return [r.grand,'#BA7517','#633806',t.passfail];
+    if(r.grand>=75) return [r.grand,'#639922','#27500A',t.strongI3];
+    if(r.grand>=60) return [r.grand,'#7F77DD','#3C3489',t.pass];
+    return [r.grand,'#E24B4A','#791F1F',t.below];
   }
+  if(r.koFail) return [r.grand,'#BA7517','#633806',t.passfail];
+  if(r.grand>=80) return [r.grand,'#639922','#27500A',t.strong];
+  if(r.grand>=65) return [r.grand,'#7F77DD','#3C3489',t.r2];
+  if(r.grand>=50) return [r.grand,'#BA7517','#633806',t.hold];
+  return [r.grand,'#E24B4A','#791F1F',t.no];
+}
+function recalc(){
+  const r=score(); const [w,bg,fg,label]=band(r);
+  document.getElementById('total-score').textContent=r.koList.length?'K.O.':r.grand;
+  const p=document.getElementById('prog'); p.style.width=w+'%'; p.style.background=bg;
+  const v=document.getElementById('verdict-label'); v.style.color=fg; v.textContent=label;
 }
 
-function toggleKO(btn){
-  const lbl=btn.previousElementSibling.textContent;
-  const isKO=btn.classList.toggle('ko-yes');
-  btn.textContent=isKO?'⚠ K.O. set':'Kein K.O.';
-  st().ko[lbl]=isKO;
-  recalc();
-}
+/* ───────── Export: prompt + scoring ───────── */
+const PROMPT={
+de:`Du bist HR-Analyst der The Signage Group (OTSG). Erstelle aus dem Interview-Scoring unten EINE Kandidaten-Auswertung auf genau einer A4-Seite.
 
-function paintVerdict(){
-  const v=st().verdict;
-  ['hire','r2','hold','no'].forEach(k=>{document.getElementById('v-'+k).className='vbtn'+(k===v?` sel-${k}`:'');});
-}
-function setVerdict(v){ st().verdict=v; paintVerdict(); }
+FORMAT
+- Eine eigenständige HTML-Datei (CSS inline, keine externen Bilder), druckfertig A4 hochkant (@page size A4; margin 14mm). Wenn möglich als Artifact / Canvas ausgeben.
+- Apple Style: Schrift -apple-system / SF Pro / Helvetica; Schwarz und Grautöne auf Weiß; Karten in hellem Grau (#f5f5f7, Radius 14px); viel Weißraum; keine Farben außer kleinen roten Punkten bei Risiken.
+- Muss auf EINE Seite passen. Lieber kürzen als umbrechen.
 
-function buildScoringText(){
-  const{grand,cats}=getScoreData();
-  const ko=st().ko;
-  const hasKO=Object.values(ko).some(v=>v);
-  const koList=Object.entries(ko).filter(([,v])=>v).map(([k])=>k).join(', ')||'None';
+AUFBAU
+1. Kopf: Name groß und fett. Unterzeile: Position · Markt/Standort · Interviewdatum · Interviewer · Fathom-Link. Rechts oben ein Pill mit der Empfehlung (schwarz, weiße Großbuchstaben).
+2. Drei Karten nebeneinander: SCORE (x / 100, bei Bedarf „kalibriert x–y“ + 1 Zeile Begründung) · VERFÜGBAR (Datum + 1 Zeile) · GEHALT (Wert oder „Offen“ + 1 Zeile).
+3. KEY FACTS: max. 6 Stichpunkte.
+4. STÄRKEN | WATCH (zwei Spalten): je max. 4 Stichpunkte; bei WATCH rote Punkte, Kernaussage fett am Anfang.
+5. WARUM <EMPFEHLUNG>: 3–4 Sätze in grauer Karte – die Entscheidungslogik.
+6. NÄCHSTE SCHRITTE: Tabelle mit max. 4 Zeilen: **Aufgabe** – kurzes Detail | Owner | Deadline.
+7. Fußzeile (klein, grau): Scoring je Kategorie, K.O.-Flags.
+
+REGELN
+- Jeder Stichpunkt max. 15 Wörter. Fakten und Zahlen, keine Füllwörter, keine Adjektive ohne Beleg.
+- Scores kritisch prüfen: Ist ein hoher Wert durch Notizen/Transkript nicht belegt, markieren und eine kalibrierte Spanne nennen.
+- Nichts erfinden. Fehlt eine Info: „Offen“ / „nicht besprochen“.
+- Hast du Zugriff auf den Fathom-Link oder ein Transkript, nutze es. Sonst nur die Daten unten.
+- Sprache: Deutsch.
+
+SCORING-DATEN
+`,
+en:`You are the HR analyst of The Signage Group (OTSG). Turn the interview scoring below into ONE candidate assessment on exactly one A4 page.
+
+FORMAT
+- One self-contained HTML file (inline CSS, no external images), print-ready A4 portrait (@page size A4; margin 14mm). Output as an artifact / canvas if available.
+- Apple style: font -apple-system / SF Pro / Helvetica; black and greys on white; light grey cards (#f5f5f7, radius 14px); generous whitespace; no colour except small red dots for risks.
+- Must fit on ONE page. Cut rather than overflow.
+
+STRUCTURE
+1. Header: name large and bold. Subline: position · market/location · interview date · interviewer · Fathom link. Top right a pill with the recommendation (black, white uppercase).
+2. Three cards side by side: SCORE (x / 100, if needed “calibrated x–y” + 1-line reason) · AVAILABLE (date + 1 line) · SALARY (value or “Open” + 1 line).
+3. KEY FACTS: max. 6 bullets.
+4. STRENGTHS | WATCH (two columns): max. 4 bullets each; WATCH with red dots, core statement bold at the start.
+5. WHY <RECOMMENDATION>: 3–4 sentences in a grey card – the decision logic.
+6. NEXT STEPS: table with max. 4 rows: **Task** – short detail | Owner | Deadline.
+7. Footer (small, grey): scoring per category, K.O. flags.
+
+RULES
+- Every bullet max. 15 words. Facts and numbers, no filler, no adjectives without evidence.
+- Challenge the scores: if a high score is not backed by the notes/transcript, flag it and give a calibrated range.
+- Never invent facts. Missing info: “Open” / “not discussed”.
+- If you can access the Fathom link or a transcript, use it. Otherwise only the data below.
+- Language: English.
+
+SCORING DATA
+`};
+
+function scoringText(){
+  const r=score(); const t=T[lang]; const g=id=>document.getElementById(id).value.trim()||'–';
+  const d=document.getElementById('cdate').value; const date=d?d.split('-').reverse().join('.'):'–';
   const vMap={hire:'Hire',r2:'Round 2',hold:'On Hold',no:'No Go'};
-  const notes=document.getElementById('final-notes').value||'–';
-  const fathom=(document.getElementById('cfathom')||{}).value||'';
-  const kam=S().scale==='kam';
-  const breakdown=S().sections.map(s=>`${cats[s.id].title}: ${cats[s.id].pts}/${cats[s.id].max}${kam&&cats[s.id].stars?` (${cats[s.id].stars}/5)`:''}${s.ko?' [KO]':''}`).join('\n');
-  return `OTSG Candidate Scoring\nProfile: ${S().name}\nCandidate: ${document.getElementById('cname').value||'–'} | Date: ${document.getElementById('cdate').value||'–'} | Interviewer: ${document.getElementById('cint').value||'–'}\n\nSCORE: ${hasKO?'K.O. – Disqualified':grand+'/100'}\nRecommendation: ${vMap[st().verdict]||'–'}\n\nBreakdown:\n${breakdown}\n\nK.O. Flags: ${koList}\n\nNotes: ${notes}${fathom?'\n\n'+fathom:''}`;
+  const lines=r.cats.map(c=>{
+    const head=`- ${L(c.sec.t)}: ${c.pts}/${c.sec.w}${c.sec.ko?' [KO-Skill]':''}`;
+    if(c.sec.cr.length===1) return `${head} · ${c.stars[0]||'–'}/5`;
+    return head+'\n'+c.sec.cr.map((cr,i)=>`    · ${L(cr)}: ${c.stars[i]||'–'}/5`).join('\n');
+  }).join('\n');
+  return [
+    `${t.position}: ${L(P().full)}`,
+    `${t.name}: ${g('cname')} | ${t.date}: ${date} | ${t.interviewer}: ${g('cint')}`,
+    `${t.market}: ${g('cmarket')} | ${t.available}: ${g('cavail')} | ${t.salary}: ${g('csalary')}`,
+    `Fathom: ${g('cfathom')}`,
+    ``,
+    `SCORE: ${r.koList.length?'K.O.':r.grand+'/100'} → ${band(r)[3]}`,
+    `${t.final}: ${vMap[st().verdict]||'–'}`,
+    ``,
+    lines,
+    ``,
+    `K.O.: ${r.koList.join('; ')||'–'}`,
+    ``,
+    `${t.notes}:`,
+    g('final-notes')
+  ].join('\n');
+}
+const fullText=()=>PROMPT[lang]+scoringText();
+
+function toast(msg){const e=document.getElementById('toast'); e.textContent=msg; e.classList.add('show'); setTimeout(()=>e.classList.remove('show'),1800);}
+function copy(text){
+  const fallback=()=>{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);};
+  return (navigator.clipboard?navigator.clipboard.writeText(text).catch(fallback):Promise.resolve(fallback()));
+}
+function showPreview(text){const p=document.getElementById('preview'); document.getElementById('preview-text').value=text; p.style.display='block';}
+function hidePreview(){document.getElementById('preview').style.display='none';}
+function copyAll(){const tx=fullText(); copy(tx).then(()=>toast(T[lang].copied)); showPreview(tx);}
+function openAI(which){
+  const tx=fullText(); copy(tx);
+  const q=encodeURIComponent(tx);
+  window.open(which==='claude'?'https://claude.ai/new?q='+q:'https://chatgpt.com/?q='+q,'_blank');
+}
+function resetAll(){
+  if(!confirm(T[lang].resetQ)) return;
+  state={}; META.forEach(id=>{const e=document.getElementById(id); e.value=id==='cint'?'Can':'';});
+  render(); save();
 }
 
-function openInClaude(){
-  const url='https://claude.ai/new?q='+encodeURIComponent('/fathom\n\n'+buildScoringText());
-  window.open(url,'_blank');
-}
-
-function exportSummary(){
-  const text=buildScoringText();
-  navigator.clipboard.writeText(text).then(()=>alert('Scoring copied!')).catch(()=>{
-    const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();
-    document.execCommand('copy');document.body.removeChild(ta);alert('Scoring copied!');
-  });
-}
-
-function generateEnglishSummary(){
-  const{grand,cats}=getScoreData();
-  const ko=st().ko; const hasKO=Object.values(ko).some(v=>v);
-  const name=document.getElementById('cname').value||'The candidate';
-  const notes=document.getElementById('final-notes').value||'';
-  const vMap={hire:'Hire',r2:'Round 2',hold:'On Hold',no:'No Go'};
-  const vLabel=hasKO?'No Go — K.O. flag triggered':(vMap[st().verdict]||'pending');
-  const pct=c=>Math.round((c.pts/c.max)*100);
-  const strengths=[],risks=[];
-  S().sections.forEach(s=>{const c=cats[s.id]; if(pct(c)>=80)strengths.push(s.title.toLowerCase()); else if(pct(c)<50)risks.push(s.title.toLowerCase());});
-  const koActive=Object.entries(ko).filter(([,v])=>v).map(([k])=>k);
-  let s=`${name} scored ${hasKO?'K.O.':grand+'/100'} for ${S().short}`;
-  s+=` (${S().sections.map(x=>`${x.title.split(' ')[0]} ${cats[x.id].pts}/${cats[x.id].max}`).join(' — ')}).`;
-  if(strengths.length) s+=` Strengths: ${strengths.join(', ')}.`;
-  if(risks.length) s+=` Risks: ${risks.join(', ')}.`;
-  if(koActive.length) s+=` K.O. flags: ${koActive.join('; ')}.`;
-  if(notes.trim()) s+=` Notes: ${notes.trim().replace(/[\n\r]+/g,' | ')}.`;
-  s+=` Verdict: ${vLabel}.`;
-  document.getElementById('sum-text').textContent=s;
-  document.getElementById('summary-box').style.display='block';
-  navigator.clipboard.writeText(s).catch(()=>{});
-}
-
-function downloadFile(){
-  const blob=new Blob([document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
-  const url=URL.createObjectURL(blob); const a=document.createElement('a');
-  a.href=url; a.download='OTSG_Candidate_Scoring.html'; document.body.appendChild(a); a.click();
-  document.body.removeChild(a); URL.revokeObjectURL(url);
-}
-
-switchProfile('sm');
+/* ───────── Init ───────── */
+load();
+if(!document.getElementById('cdate').value) document.getElementById('cdate').value=new Date().toISOString().slice(0,10);
+setLang(lang);
 </script>
 </body>
 </html>
