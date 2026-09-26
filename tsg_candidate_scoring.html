@@ -138,6 +138,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue"
 </div>
 
 <div class="section">
+  <div class="sec-head"><span class="sec-title" data-t="next"></span><span class="sec-weight" data-t="nextSub"></span></div>
+  <textarea class="notes-area" id="next-steps" data-ph="nextPh"></textarea>
+</div>
+
+<div class="section">
   <div class="sec-head"><span class="sec-title" data-t="exportTitle"></span><span class="sec-weight">Claude · ChatGPT · Grok</span></div>
   <div class="export-body">
     <div class="export-hint" data-t="exportHint"></div>
@@ -158,14 +163,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue"
 const T={
  de:{position:'Position',name:'Kandidat',namePh:'Vor- und Nachname',date:'Datum',interviewer:'Interviewer',market:'Markt / Standort',marketPh:'z. B. DE · NL · Wrocław',available:'Verfügbar ab',availPh:'z. B. 01.11.2026',salary:'Gehaltsvorstellung',salaryPh:'z. B. 65k fix + 30k variabel',fathom:'Fathom-Link (optional)',
   total:'Gesamt-Score',of:'/ 100 Pkt.',weight:'Gewichtung',koTitle:'🚫 K.O.-Kriterien',koSub:'Automatischer Ausschluss',koNo:'Kein K.O.',koYes:'⚠ K.O.',koSkill:'KO · min. 3',
-  final:'Finale Empfehlung',notes:'Notizen & Begründung',notesPh:'Kurz & knapp: Fakten, Zahlen, Beobachtungen, offene Punkte, nächste Schritte (wer / bis wann) …',
-  exportTitle:'Auswertung',exportHint:'„Scoring kopieren“ kopiert den Prompt und das Scoring. In Claude, ChatGPT oder Grok einfügen: Du bekommst eine A4-Auswertung im Apple Style. Die Buttons öffnen den Chat direkt mit Prompt, der Text liegt zusätzlich in der Zwischenablage.',
+  final:'Finale Empfehlung',notes:'Notizen & Begründung',notesPh:'Kurz & knapp: Fakten, Zahlen, Beobachtungen, offene Punkte …',next:'Nächste Schritte',nextSub:'manuell · 1 Zeile = 1 Schritt',nextPh:'Aufgabe – Detail | Owner | Deadline\nz. B. Feedback an Kandidat | Joanna | 02.10.',
+  exportTitle:'Auswertung',exportHint:'„Scoring kopieren“ kopiert Prompt + Scoring. In Claude, ChatGPT oder Grok einfügen → Ergebnis: 1 A4-Seite als PDF zum Download, immer auf Englisch, im Apple Style. Die Buttons öffnen den Chat direkt mit Prompt, der Text liegt zusätzlich in der Zwischenablage.',
   copy:'📋 Scoring kopieren',claude:'✦ In Claude öffnen',gpt:'In ChatGPT öffnen',copied:'Prompt + Scoring kopiert ✓',reset:'Neuer Kandidat',resetQ:'Alle Eingaben löschen und neuen Kandidaten starten?',
   disq:'Disqualifiziert',stop:'Stop: Skill mit 1',passfail:'Pass-Bar verfehlt (KO-Skill < 3)',strong:'Strong Hire',r2:'Round 2',hold:'On Hold',no:'No Go',strongI3:'Strong – Interview 3',pass:'Pass-Bar erreicht',below:'Unter Pass-Bar'},
  en:{position:'Position',name:'Candidate',namePh:'First and last name',date:'Date',interviewer:'Interviewer',market:'Market / location',marketPh:'e.g. DE · NL · Wrocław',available:'Available from',availPh:'e.g. 01.11.2026',salary:'Salary expectation',salaryPh:'e.g. 65k base + 30k variable',fathom:'Fathom link (optional)',
   total:'Total score',of:'/ 100 pts',weight:'Weight',koTitle:'🚫 K.O. criteria',koSub:'Automatic exclusion',koNo:'No K.O.',koYes:'⚠ K.O.',koSkill:'KO · min. 3',
-  final:'Final recommendation',notes:'Notes & rationale',notesPh:'Short and to the point: facts, numbers, observations, open points, next steps (who / by when) …',
-  exportTitle:'Evaluation',exportHint:'“Copy scoring” copies the prompt and the scoring. Paste into Claude, ChatGPT or Grok to get a one-page A4 assessment in Apple style. The buttons open the chat with the prompt already in it, and the text is also on your clipboard.',
+  final:'Final recommendation',notes:'Notes & rationale',notesPh:'Short and to the point: facts, numbers, observations, open points …',next:'Next steps',nextSub:'manual · 1 line = 1 step',nextPh:'Task – detail | Owner | Deadline\ne.g. Feedback to candidate | Joanna | 02.10.',
+  exportTitle:'Evaluation',exportHint:'“Copy scoring” copies prompt + scoring. Paste into Claude, ChatGPT or Grok → result: one A4 page as a downloadable PDF, always in English, Apple style. The buttons open the chat with the prompt already in it, and the text is also on your clipboard.',
   copy:'📋 Copy scoring',claude:'✦ Open in Claude',gpt:'Open in ChatGPT',copied:'Prompt + scoring copied ✓',reset:'New candidate',resetQ:'Clear all inputs and start a new candidate?',
   disq:'Disqualified',stop:'Stop: skill rated 1',passfail:'Pass bar missed (KO skill < 3)',strong:'Strong Hire',r2:'Round 2',hold:'On Hold',no:'No Go',strongI3:'Strong – Interview 3',pass:'Pass bar reached',below:'Below pass bar'}
 };
@@ -361,7 +366,7 @@ const ORDER=['sm','p1','p2','smgmt','ops','design','wh'];
 /* ───────── State (autosave, per browser) ───────── */
 const KEY='tsg-scoring-v2';
 let lang='de', profile='sm', state={};
-const META=['cname','cdate','cint','cmarket','cavail','csalary','cfathom','final-notes'];
+const META=['cname','cdate','cint','cmarket','cavail','csalary','cfathom','final-notes','next-steps'];
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null'); if(d){lang=d.lang||lang;profile=d.profile||profile;state=d.state||{};
   META.forEach(id=>{if(d.meta&&d.meta[id]!==undefined)document.getElementById(id).value=d.meta[id];});}}catch(e){}}
 function save(){try{const meta={};META.forEach(id=>meta[id]=document.getElementById(id).value);
@@ -465,57 +470,37 @@ function recalc(){
 }
 
 /* ───────── Export: prompt + scoring ───────── */
-const PROMPT={
-de:`Du bist HR-Analyst der The Signage Group (OTSG). Erstelle aus dem Interview-Scoring unten EINE Kandidaten-Auswertung auf genau einer A4-Seite.
+const PROMPT=`You are the HR analyst of The Signage Group (OTSG). Turn the interview scoring below into ONE candidate assessment on exactly one A4 page.
 
-FORMAT
-- Eine eigenständige HTML-Datei (CSS inline, keine externen Bilder), druckfertig A4 hochkant (@page size A4; margin 14mm). Wenn möglich als Artifact / Canvas ausgeben.
-- Apple Style: Schrift -apple-system / SF Pro / Helvetica; Schwarz und Grautöne auf Weiß; Karten in hellem Grau (#f5f5f7, Radius 14px); viel Weißraum; keine Farben außer kleinen roten Punkten bei Risiken.
-- Muss auf EINE Seite passen. Lieber kürzen als umbrechen.
+OUTPUT
+- A downloadable PDF file: A4 portrait, exactly 1 page, margins ~14 mm. Filename: <Firstname>_<Lastname>_Candidate_Assessment.pdf
+- Build it with your file / code tools (e.g. HTML → PDF) and give me the download link.
+- Only if you cannot create files: output one self-contained, print-ready HTML (@page size A4; margin 14mm) that I can save as PDF via Print.
+- Language: ALWAYS English. Translate German notes.
 
-AUFBAU
-1. Kopf: Name groß und fett. Unterzeile: Position · Markt/Standort · Interviewdatum · Interviewer · Fathom-Link. Rechts oben ein Pill mit der Empfehlung (schwarz, weiße Großbuchstaben).
-2. Drei Karten nebeneinander: SCORE (x / 100, bei Bedarf „kalibriert x–y“ + 1 Zeile Begründung) · VERFÜGBAR (Datum + 1 Zeile) · GEHALT (Wert oder „Offen“ + 1 Zeile).
-3. KEY FACTS: max. 6 Stichpunkte.
-4. STÄRKEN | WATCH (zwei Spalten): je max. 4 Stichpunkte; bei WATCH rote Punkte, Kernaussage fett am Anfang.
-5. WARUM <EMPFEHLUNG>: 3–4 Sätze in grauer Karte – die Entscheidungslogik.
-6. NÄCHSTE SCHRITTE: Tabelle mit max. 4 Zeilen: **Aufgabe** – kurzes Detail | Owner | Deadline.
-7. Fußzeile (klein, grau): Scoring je Kategorie, K.O.-Flags.
-
-REGELN
-- Jeder Stichpunkt max. 15 Wörter. Fakten und Zahlen, keine Füllwörter, keine Adjektive ohne Beleg.
-- Scores kritisch prüfen: Ist ein hoher Wert durch Notizen/Transkript nicht belegt, markieren und eine kalibrierte Spanne nennen.
-- Nichts erfinden. Fehlt eine Info: „Offen“ / „nicht besprochen“.
-- Hast du Zugriff auf den Fathom-Link oder ein Transkript, nutze es. Sonst nur die Daten unten.
-- Sprache: Deutsch.
-
-SCORING-DATEN
-`,
-en:`You are the HR analyst of The Signage Group (OTSG). Turn the interview scoring below into ONE candidate assessment on exactly one A4 page.
-
-FORMAT
-- One self-contained HTML file (inline CSS, no external images), print-ready A4 portrait (@page size A4; margin 14mm). Output as an artifact / canvas if available.
-- Apple style: font -apple-system / SF Pro / Helvetica; black and greys on white; light grey cards (#f5f5f7, radius 14px); generous whitespace; no colour except small red dots for risks.
-- Must fit on ONE page. Cut rather than overflow.
+DESIGN (Apple style)
+- Font: -apple-system / SF Pro / Helvetica. Black and greys on white.
+- Light grey cards (#f5f5f7, radius 14px), generous whitespace.
+- No colour except small red bullet dots under WATCH.
+- Must fit ONE page. Cut content rather than overflow.
 
 STRUCTURE
-1. Header: name large and bold. Subline: position · market/location · interview date · interviewer · Fathom link. Top right a pill with the recommendation (black, white uppercase).
-2. Three cards side by side: SCORE (x / 100, if needed “calibrated x–y” + 1-line reason) · AVAILABLE (date + 1 line) · SALARY (value or “Open” + 1 line).
+1. Header: name large and bold. Subline: position · market/location · interview date · interviewer · "Fathom" as link (if given). Top right: pill with the recommendation (black, white uppercase).
+2. Three cards side by side: SCORE (x / 100; if needed "calibrated x–y" + 1-line reason) · AVAILABLE (date + 1 line) · SALARY (value or "Open" + 1 line).
 3. KEY FACTS: max. 6 bullets.
-4. STRENGTHS | WATCH (two columns): max. 4 bullets each; WATCH with red dots, core statement bold at the start.
+4. STRENGTHS | WATCH (two columns): max. 4 bullets each. WATCH: core statement bold at the start.
 5. WHY <RECOMMENDATION>: 3–4 sentences in a grey card – the decision logic.
-6. NEXT STEPS: table with max. 4 rows: **Task** – short detail | Owner | Deadline.
+6. NEXT STEPS: ONLY if "Next steps" in the data below is filled. Copy those lines 1:1 as a table (Task – detail | Owner | Deadline). Do NOT invent, add or rephrase steps. If empty: omit this section entirely.
 7. Footer (small, grey): scoring per category, K.O. flags.
 
 RULES
 - Every bullet max. 15 words. Facts and numbers, no filler, no adjectives without evidence.
 - Challenge the scores: if a high score is not backed by the notes/transcript, flag it and give a calibrated range.
-- Never invent facts. Missing info: “Open” / “not discussed”.
+- Never invent facts. Missing info: "Open" / "not discussed".
 - If you can access the Fathom link or a transcript, use it. Otherwise only the data below.
-- Language: English.
 
 SCORING DATA
-`};
+`;
 
 function scoringText(){
   const r=score(); const t=T[lang]; const g=id=>document.getElementById(id).value.trim()||'–';
@@ -540,10 +525,14 @@ function scoringText(){
     `K.O.: ${r.koList.join('; ')||'–'}`,
     ``,
     `${t.notes}:`,
-    g('final-notes')
+    g('final-notes'),
+    ``,
+    `${t.next}:`,
+    g('next-steps')
   ].join('\n');
 }
-const fullText=()=>PROMPT[lang]+scoringText();
+// Export is always English, independent of UI language
+function fullText(){const k=lang; lang='en'; try{return PROMPT+scoringText();} finally{lang=k;}}
 
 function toast(msg){const e=document.getElementById('toast'); e.textContent=msg; e.classList.add('show'); setTimeout(()=>e.classList.remove('show'),1800);}
 function copy(text){
