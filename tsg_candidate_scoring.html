@@ -470,34 +470,73 @@ function recalc(){
 }
 
 /* ───────── Export: prompt + scoring ───────── */
-const PROMPT=`You are the HR analyst of The Signage Group (OTSG). Turn the interview scoring below into ONE candidate assessment on exactly one A4 page.
+const PROMPT=`You are the HR analyst of The Signage Group (OTSG). Turn the interview scoring below into ONE candidate assessment: a PDF, exactly one full A4 page, always in English.
 
-OUTPUT
-- A downloadable PDF file: A4 portrait, exactly 1 page, margins ~14 mm. Filename: <Firstname>_<Lastname>_Candidate_Assessment.pdf
-- Build it with your file / code tools (e.g. HTML → PDF) and give me the download link.
-- Only if you cannot create files: output one self-contained, print-ready HTML (@page size A4; margin 14mm) that I can save as PDF via Print.
-- Language: ALWAYS English. Translate German notes.
+HOW (strict)
+1. Take the HTML TEMPLATE below. Do NOT change CSS, classes or structure. Only replace {{…}} placeholders and repeat <li> / <tr> rows. Delete the HTML comments.
+2. Render it with a real browser engine: Playwright/Chromium (preferred) or WeasyPrint (pip install weasyprint). A4, margin 0 (the template has its own padding), print backgrounds on.
+3. NEVER redraw the layout with reportlab, fpdf, matplotlib or similar — that destroys the design.
+4. Check: exactly 1 page. If 2 pages, shorten bullets and re-render. The template spreads blocks over the full page height — keep content amounts as specified so the page looks full.
+5. Deliver the PDF as download. Filename: Firstname_Lastname_Candidate_Assessment.pdf
+6. Only if you cannot run code: output the filled HTML so I can print it as PDF.
 
-DESIGN (Apple style)
-- Font: -apple-system / SF Pro / Helvetica. Black and greys on white.
-- Light grey cards (#f5f5f7, radius 14px), generous whitespace.
-- No colour except small red bullet dots under WATCH.
-- Must fit ONE page. Cut content rather than overflow.
-
-STRUCTURE
-1. Header: name large and bold. Subline: position · market/location · interview date · interviewer · "Fathom" as link (if given). Top right: pill with the recommendation (black, white uppercase).
-2. Three cards side by side: SCORE (x / 100; if needed "calibrated x–y" + 1-line reason) · AVAILABLE (date + 1 line) · SALARY (value or "Open" + 1 line).
-3. KEY FACTS: max. 6 bullets.
-4. STRENGTHS | WATCH (two columns): max. 4 bullets each. WATCH: core statement bold at the start.
-5. WHY <RECOMMENDATION>: 3–4 sentences in a grey card – the decision logic.
-6. NEXT STEPS: ONLY if "Next steps" in the data below is filled. Copy those lines 1:1 as a table (Task – detail | Owner | Deadline). Do NOT invent, add or rephrase steps. If empty: omit this section entirely.
-7. Footer (small, grey): scoring per category, K.O. flags.
-
-RULES
+CONTENT
+- Key facts: exactly 6 bullets. Strengths: 4. Watch: 4, bold core statement first. Why: 3–4 sentences, the decision logic.
 - Every bullet max. 15 words. Facts and numbers, no filler, no adjectives without evidence.
-- Challenge the scores: if a high score is not backed by the notes/transcript, flag it and give a calibrated range.
-- Never invent facts. Missing info: "Open" / "not discussed".
-- If you can access the Fathom link or a transcript, use it. Otherwise only the data below.
+- Challenge the scores: if a high score is not backed by notes/transcript, flag it and give a calibrated range in the Score card.
+- Scoring block: one row per category from the data.
+- Next steps: ONLY the lines given under "Next steps" in the data, copied 1:1. Never invent steps. If empty: delete the block.
+- Never invent facts. Missing info: "Open" / "not discussed". Translate German notes to English.
+- If you can access the Fathom link or a transcript, use it. Otherwise only the data below. No Fathom link: remove it from the subline.
+
+HTML TEMPLATE
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+@page{size:A4;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;color:#1d1d1f;font-size:9.8pt;line-height:1.45}
+.page{width:210mm;height:296mm;padding:15mm 16mm 11mm;display:flex;flex-direction:column;justify-content:space-between}
+.hd{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+h1{font-size:28pt;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.sub{color:#6e6e73;font-size:9.5pt;margin-top:5px}
+.sub a{color:#0071e3;text-decoration:none}
+.pill{background:#1d1d1f;color:#fff;font-weight:700;font-size:9pt;letter-spacing:.08em;padding:8px 18px;border-radius:999px;white-space:nowrap;margin-top:6px}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+.cards{border-collapse:separate;border-spacing:9px 0;width:calc(100% + 18px);margin-left:-9px}
+.card{background:#f5f5f7;border-radius:14px;padding:13px 15px;vertical-align:top}
+.k,h2{font-size:7.8pt;font-weight:700;letter-spacing:.1em;color:#6e6e73;text-transform:uppercase}
+h2{margin-bottom:7px}
+.v{font-size:18pt;font-weight:700;margin-top:4px;letter-spacing:-.01em}
+.v small{font-size:9pt;font-weight:400;color:#6e6e73;letter-spacing:0}
+.d{font-size:8.6pt;color:#6e6e73;margin-top:3px;line-height:1.35}
+ul{padding-left:15px}li{margin-bottom:4px;padding-left:2px}
+ul.w li::marker{color:#ff3b30}
+.col{vertical-align:top}.col:first-child{padding-right:18px}
+.why{background:#f5f5f7;border-radius:14px;padding:13px 17px}
+.sc td{padding:5px 0;border-bottom:.5px solid #e5e5ea;font-size:9pt;vertical-align:middle}
+.bar{height:5px;background:#e5e5ea;border-radius:3px;margin:0 14px}.bar i{display:block;height:5px;background:#1d1d1f;border-radius:3px}
+.r{text-align:right;font-weight:600}
+.ns td{padding:6px 0;border-bottom:.5px solid #e5e5ea;font-size:9pt;vertical-align:top}.ns td.m{color:#6e6e73}
+.foot{font-size:7.6pt;color:#86868b;border-top:.5px solid #d2d2d7;padding-top:7px}
+</style></head><body><div class="page">
+<div class="hd"><div><h1>{{NAME}}</h1><div class="sub">{{POSITION}} · {{MARKET}} · {{DATE}} · {{INTERVIEWER}} · <a href="{{FATHOM_URL}}">Fathom</a></div></div><div class="pill">{{RECOMMENDATION}}</div></div>
+<table class="cards"><tr>
+<td class="card"><div class="k">Score</div><div class="v">{{SCORE}} <small>/ 100{{ · calibrated x–y}}</small></div><div class="d">{{1 line}}</div></td>
+<td class="card"><div class="k">Available</div><div class="v">{{DATE or Open}}</div><div class="d">{{1 line}}</div></td>
+<td class="card"><div class="k">Salary</div><div class="v">{{VALUE or Open}}</div><div class="d">{{1 line}}</div></td>
+</tr></table>
+<div><h2>Key facts</h2><ul><li>{{fact}}</li><!-- exactly 6 --></ul></div>
+<table><tr><td class="col"><h2>Strengths</h2><ul><li>{{strength}}</li><!-- 4 --></ul></td>
+<td class="col"><h2>Watch</h2><ul class="w"><li><b>{{Core.}}</b> {{detail}}</li><!-- 4 --></ul></td></tr></table>
+<div><h2>Why {{RECOMMENDATION}}</h2><div class="why">{{3–4 sentences}}</div></div>
+<div><h2>Scoring</h2><table class="sc">
+<tr><td style="width:42%">{{Category}}</td><td><div class="bar"><i style="width:{{pts/max*100}}%"></i></div></td><td class="r" style="width:13%">{{pts}} / {{max}}</td></tr><!-- one row per category -->
+</table></div>
+<!-- NEXT STEPS: only if provided in the data, else delete this div -->
+<div><h2>Next steps</h2><table class="ns">
+<tr><td style="width:62%"><b>{{Task}}</b> – {{detail}}</td><td class="m">{{Owner}}</td><td class="m r" style="font-weight:400">{{Deadline}}</td></tr>
+</table></div>
+<div class="foot">K.O. flags: {{flags or none}} · The Signage Group · Candidate assessment · confidential</div>
+</div></body></html>
 
 SCORING DATA
 `;
