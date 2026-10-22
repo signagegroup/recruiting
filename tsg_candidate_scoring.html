@@ -155,7 +155,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue"
     <div class="preview" id="preview"><textarea id="preview-text" readonly></textarea></div>
   </div>
 </div>
-<div class="version">Version 2.1 · 27.09.2026</div>
+<div class="version">Version 2.2 · 22.10.2026</div>
 
 </div>
 <div class="toast" id="toast"></div>
@@ -311,6 +311,43 @@ const PROFILES={
       c('Kein Standing gegenüber Produktion / Monteuren','No standing with production / installers'),
       c('Deutsch nicht kommunikationssicher','German not fluent enough')]
  },
+ sup:{name:{de:'Support',en:'Customer Support'},full:{de:'Customer Support – OTSG (Sygns / Canberry)',en:'Customer Support – OTSG (Sygns / Canberry)'},bands:'std',
+  sections:[
+   {id:'cust',t:{de:'Kundenumgang & emotionale Intelligenz',en:'Customer handling & emotional intelligence'},w:25,ko:true,cr:[
+     c('Deeskaliert wütende Kunden – reales Beispiel','De-escalates angry customers – real example',3),
+     c('Hört aktiv zu, übernimmt Verantwortung','Listens actively, takes ownership',2),
+     c('Kundentauglicher Ton, mündlich und schriftlich','Customer-ready tone, spoken and written',2)]},
+   {id:'judg',t:{de:'Urteilsvermögen & wirtschaftliches Denken',en:'Judgement & commercial thinking'},w:20,ko:true,cr:[
+     c('Wägt Kundenwert gegen Kosten ab','Weighs customer value against cost',3),
+     c('Entscheidet im eigenen Rahmen, eskaliert richtig','Decides within own mandate, escalates correctly',3),
+     c('Kulanz- und Reklamationslogik (nicht alles gratis)','Goodwill and complaint logic (not everything for free)',2)]},
+   {id:'coord',t:{de:'Abstimmung über Abteilungen',en:'Cross-functional coordination'},w:15,cr:[
+     c('Verbindet Sales, Produktion und Logistik','Connects sales, production and logistics',3),
+     c('Bleibt dran, bis der Fall gelöst ist','Follows up until the case is closed',3),
+     c('Priorisiert sauber unter Last','Prioritises clearly under load',2)]},
+   {id:'proc',t:{de:'Prozess, CRM & Dokumentation',en:'Process, CRM & documentation'},w:10,cr:[
+     c('Ticket-/CRM-Nutzung (Bitrix, Salesforce, SAP)','Ticket / CRM use (Bitrix, Salesforce, SAP)',3),
+     c('Dokumentationsqualität & Notizen-Hygiene','Documentation quality & note hygiene',2),
+     c('Fristen- und SLA-Disziplin','Deadline and SLA discipline',2)]},
+   {id:'prod',t:{de:'Produkt & Lerntempo',en:'Product & learning speed'},w:10,cr:[
+     c('Erfasst erklärungsbedürftige, individuell gefertigte Produkte','Grasps complex, custom-made products',3),
+     c('Stellt die richtigen Rückfragen','Asks the right questions',2)]},
+   {id:'lang',t:{de:'Sprachen & Kommunikation',en:'Languages & communication'},w:10,cr:[
+     c('Marktsprache kundentauglich, mündlich und schriftlich','Market language client-ready, spoken and written',3),
+     c('Englisch im Arbeitsalltag','English at working level',2),
+     c('Weitere Sprachen (PL, TR etc.) – Bonus','Other languages (PL, TR etc.) – bonus',1)]},
+   {id:'mot',t:{de:'Motivation & Resilienz',en:'Motivation & resilience'},w:10,cr:[
+     c('Eigenantrieb','Self-drive',3),
+     c('Stressresistenz, Umgang mit Rückschlägen','Stress resistance, handling setbacks',3),
+     c('Karriereziel & Interesse an der Rolle','Career goal & interest in the role',2)]}
+  ],
+  ko:[c('Marktsprache nicht kundentauglich','Market language not client-ready'),
+      c('Bleibt unter Kundenärger nicht ruhig','Cannot stay calm under customer anger'),
+      c('Reicht Probleme weiter, keine Ownership','Hands problems off, no ownership'),
+      c('Gibt nach, ohne Kosten abzuwägen','Concedes without weighing cost'),
+      c('Lehnt Ticket-/CRM-Dokumentation ab','Refuses ticket / CRM documentation'),
+      c('Schiebt Fehler auf Kunden, Kollegen oder Arbeitgeber','Blames customers, colleagues or employers for failures')]
+ },
  design:{name:{de:'Design Team',en:'Design Team'},full:{de:'Design Team – Grafik, Signage-Design & Druckvorstufe',en:'Design Team – graphics, signage design & prepress'},bands:'std',
   sections:[
    {id:'port',t:{de:'Portfolio & Gestaltung',en:'Portfolio & design quality'},w:25,cr:[
@@ -363,7 +400,7 @@ const PROFILES={
       c('Keine Arbeitserlaubnis','No work permit')]
  }
 };
-const ORDER=['sm','p1','p2','smgmt','ops','design','wh'];
+const ORDER=['sm','p1','p2','smgmt','ops','sup','design','wh'];
 
 /* ───────── State (autosave, per browser) ───────── */
 const KEY='tsg-scoring-v2';
